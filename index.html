@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="HAZMAT ID"/>
+<meta name="theme-color" content="#070d18"/>
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='38' fill='%23070d18'/%3E%3Crect x='15' y='55' width='150' height='90' rx='14' fill='%23CC2200'/%3E%3Crect x='15' y='55' width='150' height='34' rx='14' fill='%23991800'/%3E%3Crect x='62' y='24' width='56' height='38' rx='8' fill='%23FF6600'/%3E%3Ccircle cx='90' cy='22' r='12' fill='%23FF8800'/%3E%3Ccircle cx='90' cy='22' r='7' fill='%23FFCC00'/%3E%3Cpolygon points='90,65 118,112 62,112' fill='white'/%3E%3Ctext x='90' y='108' text-anchor='middle' font-size='28' font-weight='900' font-family='Arial' fill='%23CC0000'%3E!%3C/text%3E%3Crect x='24' y='142' width='24' height='18' rx='4' fill='%23881100'/%3E%3Crect x='132' y='142' width='24' height='18' rx='4' fill='%23881100'/%3E%3Crect x='14' y='155' width='152' height='12' rx='4' fill='%23CC2200'/%3E%3Ctext x='90' y='165' text-anchor='middle' font-size='10' font-weight='900' font-family='Arial' fill='white' letter-spacing='3'%3EHAZMAT%3C/text%3E%3C/svg%3E"/>
+<title>HAZMAT ID – GRE 2025</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+:root{
+  --bg:#070d18;--bg2:#0a1525;--bg3:#0c1a30;
+  --rojo:#CC2200;--naranja:#FF6600;--amarillo:#FFAA00;--verde:#557700;
+  --texto:#d0dff5;--subtexto:#8899aa;--dim:#445577;
+  --borde:#ffffff12;
+  --safe-top:env(safe-area-inset-top,44px);
+  --safe-bot:env(safe-area-inset-bottom,20px);
+}
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--texto);
+  font-family:'Courier New',Courier,monospace;
+  overflow:hidden;
+}
+#app{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  max-width:480px;
+  margin:0 auto;
+  padding-top:var(--safe-top);
+}
+
+/* HEADER */
+#header{
+background:linear-gradient(180deg,#0d1e3a,#080f1e);
+border-bottom:1px solid #ff330033;
+padding:12px 16px 12px;
+display:flex;align-items:center;gap:12px;
+flex-shrink:0;
+}
+.hdr-icon{
+width:46px;height:46px;border-radius:10px;flex-shrink:0;
+background:linear-gradient(135deg,#CC2200,#FF6600);
+display:flex;align-items:center;justify-content:center;
+font-size:22px;box-shadow:0 0 24px #FF330066;
+}
+.hdr-title{font-size:17px;font-weight:bold;color:#fff;letter-spacing:2px}
+.hdr-sub{font-size:9px;color:var(–dim);letter-spacing:2px;margin-top:2px}
+#peligro-badge{
+margin-left:auto;border-radius:8px;padding:4px 10px;
+font-size:10px;color:white;font-weight:bold;display:none;
+}
+
+/* NAV */
+#nav{display:flex;background:#050d1a;border-bottom:1px solid var(–borde);flex-shrink:0}
+.nav-btn{
+flex:1;background:none;border:none;color:var(–dim);
+padding:12px 4px;font-size:10px;font-weight:bold;letter-spacing:1px;
+cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;
+transition:color .2s,border-color .2s;
+}
+.nav-btn.active{color:#ff6600;border-bottom-color:#ff6600}
+
+/* SCROLL AREA */
+#content{flex:1;overflow-y:auto;padding:16px 14px;padding-bottom:calc(var(–safe-bot) + 20px)}
+#content::-webkit-scrollbar{display:none}
+
+/* INPUT AREA */
+.input-card{
+background:linear-gradient(135deg,var(–bg2),var(–bg3));
+border:1px solid var(–borde);border-radius:14px;padding:18px;margin-bottom:14px;
+}
+.input-label{font-size:10px;color:var(–dim);letter-spacing:3px;margin-bottom:10px}
+
+/* MODO TOGGLE */
+.modo-toggle{display:flex;gap:6px;margin-bottom:14px}
+.modo-btn{
+flex:1;background:#030810;border:1px solid #00aaff22;border-radius:8px;
+color:#445577;padding:8px;font-size:11px;font-weight:bold;
+cursor:pointer;font-family:inherit;letter-spacing:1px;transition:all .2s;
+}
+.modo-btn.active{background:#00337755;border-color:#00aaff88;color:#00ccff}
+
+/* INPUT CÓDIGO */
+.input-row{display:flex;gap:10px}
+.input-wrap{flex:1;position:relative}
+.un-prefix{
+position:absolute;left:14px;top:50%;transform:translateY(-50%);
+color:#667799;font-size:14px;font-weight:bold;
+}
+#codigo-input{
+width:100%;background:#030810;border:1px solid #00aaff33;
+border-radius:10px;color:#00ccff;font-size:32px;font-weight:bold;
+padding:14px 14px 14px 48px;outline:none;letter-spacing:8px;
+font-family:‘Courier New’,Courier,monospace;
+-webkit-appearance:none;
+}
+#codigo-input::placeholder{color:#223344}
+
+/* INPUT NOMBRE */
+#nombre-wrap{position:relative;display:none}
+#nombre-input{
+width:100%;background:#030810;border:1px solid #00aaff33;
+border-radius:10px;color:#00ccff;font-size:16px;font-weight:bold;
+padding:14px 44px 14px 14px;outline:none;
+font-family:‘Courier New’,Courier,monospace;
+-webkit-appearance:none;
+}
+#nombre-input::placeholder{color:#223344;font-size:14px}
+#btn-clear-nombre{
+position:absolute;right:12px;top:50%;transform:translateY(-50%);
+background:none;border:none;color:#ff5555;font-size:18px;cursor:pointer;display:none;
+}
+
+/* AUTOCOMPLETE */
+#autocomplete{
+background:#030d1a;border:1px solid #00aaff33;border-radius:10px;
+margin-top:6px;overflow:hidden;display:none;max-height:220px;overflow-y:auto;
+}
+#autocomplete::-webkit-scrollbar{display:none}
+.ac-item{
+padding:12px 14px;cursor:pointer;border-bottom:1px solid #ffffff08;
+display:flex;justify-content:space-between;align-items:center;
+transition:background .15s;
+}
+.ac-item:last-child{border-bottom:none}
+.ac-item:active{background:#00337744}
+.ac-nombre{font-size:13px;color:#cce0ff;font-weight:bold}
+.ac-sub{font-size:10px;color:#445577;margin-top:2px}
+.ac-badge{font-size:10px;color:#00aaff;background:#00aaff11;
+border:1px solid #00aaff33;border-radius:6px;padding:2px 8px;flex-shrink:0;margin-left:8px}
+
+#btn-clear{
+background:#120808;border:1px solid #ff333322;border-radius:10px;
+color:#ff5555;padding:0 14px;font-size:18px;cursor:pointer;display:none;
+}
+#btn-buscar{
+width:100%;margin-top:12px;
+background:linear-gradient(90deg,#CC2200,#FF4400);
+border:none;border-radius:10px;color:white;
+font-size:13px;font-weight:bold;padding:14px;
+cursor:pointer;letter-spacing:2px;font-family:inherit;
+box-shadow:0 4px 20px #FF220044;
+-webkit-appearance:none;
+}
+#error-box{
+background:#180808;border:1px solid #ff333355;border-radius:10px;
+padding:14px;color:#ff8888;font-size:13px;margin-bottom:14px;display:none;
+}
+
+/* RESULTADO */
+#resultado{display:none}
+.alerta-banner{
+border-radius:12px;padding:14px 16px;margin-bottom:14px;text-align:center;
+}
+.alerta-titulo{font-size:14px;font-weight:bold;color:white;letter-spacing:3px}
+.alerta-guia{font-size:10px;color:#ffffff99;margin-top:4px;letter-spacing:1px}
+.sustancia-card{
+background:var(–bg2);border-radius:12px;padding:16px;margin-bottom:14px;
+display:flex;justify-content:space-between;align-items:flex-start;
+border-left:4px solid #888;
+}
+.sust-un{font-size:11px;color:var(–dim);letter-spacing:2px}
+.sust-nombre{font-size:18px;font-weight:bold;color:#fff;margin-top:4px}
+.sust-desc{font-size:12px;color:var(–subtexto);margin-top:6px}
+.clase-badge{
+border-radius:8px;padding:6px 10px;font-size:11px;font-weight:bold;
+flex-shrink:0;margin-left:10px;
+}
+
+/* SUB-TABS */
+.sub-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.sub-tabs::-webkit-scrollbar{display:none}
+.sub-btn{
+background:var(–bg2);border:1px solid var(–borde);border-radius:8px;
+color:#667799;padding:8px 14px;font-size:11px;font-weight:bold;
+cursor:pointer;white-space:nowrap;font-family:inherit;
+transition:background .2s,color .2s;
+}
+.sub-btn.active{background:#FF4400;border-color:#FF4400;color:white}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ZONA CARD */
+.zona-card{
+background:var(–bg2);border-radius:10px;padding:12px 14px;margin-bottom:10px;
+display:flex;justify-content:space-between;align-items:center;
+}
+.zona-label{font-size:12px;color:var(–subtexto)}
+.zona-val{font-size:14px;font-weight:bold}
+
+/* ACCION CARD */
+.accion-card{
+background:var(–bg2);border:1px solid var(–borde);border-radius:10px;
+padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;
+}
+.accion-num{
+width:24px;height:24px;border-radius:50%;flex-shrink:0;
+background:linear-gradient(135deg,#CC2200,#FF4400);
+display:flex;align-items:center;justify-content:center;
+font-size:11px;font-weight:bold;color:white;
+}
+.accion-txt{font-size:13px;color:#cce0ff;line-height:1.5}
+
+/* EPP */
+.epp-nivel-card{border:2px solid;border-radius:12px;padding:14px;margin-bottom:14px}
+.epp-nivel-titulo{font-size:13px;font-weight:bold;margin-bottom:4px}
+.epp-nivel-desc{font-size:11px;color:#99aabb}
+.epp-item{
+background:var(–bg2);border-radius:10px;padding:12px 14px;
+margin-bottom:10px;display:flex;gap:12px;align-items:center;
+border-left:3px solid #445577;
+}
+.epp-item.oblig{border-left-color:#FF4400}
+.epp-icono{font-size:24px;flex-shrink:0}
+.epp-nombre{font-size:13px;color:#cce0ff;flex:1}
+.epp-tag{
+font-size:9px;font-weight:bold;letter-spacing:1px;border-radius:6px;padding:3px 8px;
+color:#FF4400;background:#FF440022;
+}
+.epp-tag.opc{color:#667799;background:#ffffff11}
+
+/* CONTROL */
+.control-card{
+background:var(–bg2);border:1px solid var(–borde);border-radius:10px;
+padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;
+border-left:3px solid #00aaff;
+}
+.control-icono{font-size:22px;flex-shrink:0;margin-top:2px}
+.control-tipo{font-size:10px;color:#00aaff;letter-spacing:2px;margin-bottom:3px;font-weight:bold}
+.control-texto{font-size:13px;color:#cce0ff;line-height:1.5}
+
+/* NORMAS */
+.norma-card{
+background:var(–bg2);border-radius:10px;padding:14px;margin-bottom:12px;
+display:flex;gap:12px;align-items:center;border-left:3px solid #888;
+}
+.norma-icono{font-size:22px;flex-shrink:0}
+.norma-titulo{font-size:10px;letter-spacing:2px;margin-bottom:3px;font-weight:bold}
+.norma-valor{font-size:13px;color:#cce0ff;font-weight:bold}
+
+/* HISTORIAL */
+.hist-item{
+width:100%;background:var(–bg2);border:1px solid var(–borde);
+border-radius:12px;padding:14px 16px;margin-bottom:10px;
+display:flex;justify-content:space-between;align-items:center;
+cursor:pointer;text-align:left;font-family:inherit;
+}
+.hist-un{font-size:10px;color:var(–dim)}
+.hist-nombre{font-size:14px;color:#cce0ff;margin-top:3px}
+.hist-clase{font-size:10px;color:#667799;margin-top:2px}
+.hist-badge{border-radius:8px;padding:4px 10px;font-size:10px;color:white;font-weight:bold}
+
+/* CLASES */
+.clase-row{
+background:var(–bg2);border-radius:10px;padding:14px;margin-bottom:10px;
+display:flex;gap:12px;align-items:flex-start;border-left:3px solid #888;
+}
+.clase-cl{font-size:10px;letter-spacing:2px;margin-bottom:2px;font-weight:bold}
+.clase-nombre{font-size:14px;font-weight:bold;color:#cce0ff;margin-bottom:4px}
+.clase-desc{font-size:11px;color:#778899;line-height:1.5}
+
+/* SECCION LABEL */
+.sec-label{font-size:10px;color:var(–dim);letter-spacing:3px;margin-bottom:12px}
+
+/* ALERTA BOX */
+.alerta-box{border:2px solid;border-radius:12px;padding:18px;margin-bottom:14px}
+.alerta-box-txt{font-size:13px;font-weight:bold;color:white;line-height:1.6}
+
+/* FUEGO NCH 934 */
+.fuego-clase-card{
+background:var(–bg2);border-radius:12px;padding:14px 16px;margin-bottom:10px;
+display:flex;gap:14px;align-items:center;
+border:1px solid var(–borde);
+}
+.fuego-letra{
+width:52px;height:52px;border-radius:10px;flex-shrink:0;
+display:flex;align-items:center;justify-content:center;
+font-size:26px;font-weight:900;letter-spacing:-1px;
+}
+.fuego-info{}
+.fuego-nombre{font-size:14px;font-weight:bold;color:#fff;margin-bottom:3px}
+.fuego-desc{font-size:11px;color:#8899aa;line-height:1.4}
+.fuego-aplica{font-size:10px;font-weight:bold;letter-spacing:1px;margin-top:4px}
+
+.extintor-card{
+background:var(–bg2);border-radius:10px;padding:12px 14px;margin-bottom:10px;
+display:flex;gap:12px;align-items:flex-start;
+border-left:3px solid #00cc66;
+}
+.extintor-card.prohibido{border-left-color:#FF2200;background:#1a0808}
+.extintor-icono{font-size:26px;flex-shrink:0}
+.extintor-tipo{font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:3px}
+.extintor-desc{font-size:12px;color:#99aabb;line-height:1.4}
+.extintor-eficacia{
+font-size:9px;font-weight:bold;letter-spacing:1px;border-radius:6px;
+padding:2px 8px;margin-top:5px;display:inline-block;
+}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+.anim-pulse{animation:pulse 1.5s infinite}
+.anim-blink{animation:blink 1s infinite}
+
+/* INSTALL BANNER */
+#install-banner{
+background:linear-gradient(90deg,#001133,#002255);
+border-top:1px solid #00aaff33;
+padding:10px 16px;
+display:flex;align-items:center;gap:10px;
+flex-shrink:0;
+}
+#install-banner p{font-size:11px;color:#7799cc;flex:1;line-height:1.4}
+#install-banner strong{color:#00ccff}
+#btn-dismiss{
+background:none;border:1px solid #00aaff33;border-radius:8px;
+color:#5577aa;font-size:11px;padding:6px 10px;cursor:pointer;
+white-space:nowrap;font-family:inherit;
+}
+</style>
+
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+
+  <div id="header">
+    <div class="hdr-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tanque/contenedor -->
+        <rect x="3" y="8" width="22" height="14" rx="3" fill="#FF6600" stroke="#FF4400" stroke-width="1.5"/>
+        <rect x="3" y="8" width="22" height="5" rx="2" fill="#CC2200"/>
+        <!-- Valvula superior -->
+        <rect x="11" y="4" width="6" height="5" rx="1" fill="#FF8800"/>
+        <circle cx="14" cy="4" r="2" fill="#FFAA00"/>
+        <!-- Simbolo peligro en tanque -->
+        <polygon points="14,10 18,17 10,17" fill="white" opacity="0.9"/>
+        <text x="14" y="16.5" text-anchor="middle" font-size="5" font-weight="900" fill="#CC2200">!</text>
+        <!-- Patas del contenedor -->
+        <rect x="5" y="21" width="3" height="4" rx="1" fill="#884400"/>
+        <rect x="20" y="21" width="3" height="4" rx="1" fill="#884400"/>
+        <!-- Destellos de peligro -->
+        <line x1="1" y1="6" x2="3" y2="9" stroke="#FFAA00" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="27" y1="6" x2="25" y2="9" stroke="#FFAA00" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="hdr-title">HAZMAT ID</div>
+      <div class="hdr-sub">GRE 2025 · NCH 2190 · NCH 382 · NCH 1411/4</div>
+    </div>
+    <div id="peligro-badge"></div>
+  </div>
+
+  <!-- NAV -->
+
+  <div id="nav">
+    <button class="nav-btn active" onclick="setVista('buscar')">🔍 BUSCAR</button>
+    <button class="nav-btn" onclick="setVista('historial')">📋 HISTORIAL</button>
+    <button class="nav-btn" onclick="setVista('clases')">📊 CLASES</button>
+  </div>
+
+  <!-- CONTENT -->
+
+  <div id="content">
+
+```
+<!--  VISTA BUSCAR  -->
+<div id="vista-buscar">
+  <div class="input-card">
+    <!-- Toggle modo -->
+    <div class="modo-toggle">
+      <button class="modo-btn active" id="btn-modo-un" onclick="setModo('un')">🔢 POR CÓDIGO UN</button>
+      <button class="modo-btn" id="btn-modo-nombre" onclick="setModo('nombre')">🔤 POR SUSTANCIA</button>
+    </div>
+
+    <!-- Modo código UN -->
+    <div id="modo-un-wrap">
+      <div class="input-label">CÓDIGO NACIONES UNIDAS (GRE 2025)</div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <span class="un-prefix">UN</span>
+          <input id="codigo-input" type="tel" inputmode="numeric" maxlength="4" placeholder="0000"
+            oninput="onInput(this)" onkeydown="onKey(event)"/>
+        </div>
+        <button id="btn-clear" onclick="limpiar()">✕</button>
+      </div>
+    </div>
+
+    <!-- Modo nombre sustancia -->
+    <div id="modo-nombre-wrap" style="display:none">
+      <div class="input-label">NOMBRE DE SUSTANCIA PELIGROSA</div>
+      <div id="nombre-wrap" style="display:block;position:relative">
+        <input id="nombre-input" type="search" autocomplete="off"
+          placeholder="Ej: ácido sulfúrico, cloro, gasolina..."
+          oninput="onNombreInput(this)" onkeydown="onNombreKey(event)"/>
+        <button id="btn-clear-nombre" onclick="limpiarNombre()">✕</button>
+      </div>
+      <div id="autocomplete"></div>
+    </div>
+
+    <button id="btn-buscar" onclick="buscar()">🔍 IDENTIFICAR SUSTANCIA</button>
+  </div>
+
+  <div id="error-box"></div>
+
+  <div id="resultado">
+    <div class="alerta-banner" id="alerta-banner">
+      <div class="alerta-titulo" id="alerta-titulo"></div>
+      <div class="alerta-guia" id="alerta-guia"></div>
+    </div>
+
+    <div class="sustancia-card" id="sust-card">
+      <div>
+        <div class="sust-un" id="sust-un"></div>
+        <div class="sust-nombre" id="sust-nombre"></div>
+        <div class="sust-desc" id="sust-desc"></div>
+      </div>
+      <div class="clase-badge" id="clase-badge"></div>
+    </div>
+
+    <div class="sub-tabs">
+      <button class="sub-btn active" onclick="setTab('alerta')">🚨 ALERTA</button>
+      <button class="sub-btn" onclick="setTab('acciones')">⚡ ACCIONES</button>
+      <button class="sub-btn" onclick="setTab('epp')">🦺 EPP</button>
+      <button class="sub-btn" onclick="setTab('fuego')">🔥 FUEGO</button>
+      <button class="sub-btn" onclick="setTab('control')">🛡 CONTROL</button>
+      <button class="sub-btn" onclick="setTab('normas')">📋 NORMAS</button>
+    </div>
+
+    <!-- TAB ALERTA -->
+    <div class="tab-panel active" id="tab-alerta">
+      <div class="alerta-box" id="alerta-box">
+        <div class="alerta-box-txt" id="alerta-box-txt"></div>
+      </div>
+      <div class="sec-label">ZONAS DE AISLAMIENTO (GRE 2025)</div>
+      <div id="zonas-container"></div>
+    </div>
+
+    <!-- TAB ACCIONES -->
+    <div class="tab-panel" id="tab-acciones">
+      <div class="sec-label">ACCIONES DE EMERGENCIA – GRE 2025</div>
+      <div id="acciones-container"></div>
+    </div>
+
+    <!-- TAB EPP -->
+    <div class="tab-panel" id="tab-epp">
+      <div class="epp-nivel-card" id="epp-nivel-card">
+        <div class="epp-nivel-titulo" id="epp-nivel-titulo"></div>
+        <div class="epp-nivel-desc" id="epp-nivel-desc"></div>
+      </div>
+      <div class="sec-label">EQUIPOS DE PROTECCIÓN PERSONAL</div>
+      <div id="epp-container"></div>
+    </div>
+
+    <!-- TAB ROMBO NCH 1411/4 -->
+    <div class="tab-panel" id="tab-rombo">
+      <div class="sec-label">ROMBO NCH 1411/4 – IDENTIFICACION DE RIESGO</div>
+
+      <!-- ROMBO SVG - siempre visible, colores exactos NCH 1411/4 -->
+      <div style="display:flex;justify-content:center;margin-bottom:20px">
+        <svg id="rombo-svg" width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Borde exterior negro del rombo completo -->
+          <polygon points="120,4 236,120 120,236 4,120" fill="#111" stroke="#000" stroke-width="2"/>
+
+          <!-- ROJO - INFLAMABILIDAD - ARRIBA -->
+          <polygon points="120,6 234,120 120,120 6,120" fill="#CC0000"/>
+          <!-- AZUL - SALUD - IZQUIERDA -->
+          <polygon points="6,120 120,6 120,120 120,234" fill="#0033CC"/>
+          <!-- AMARILLO - REACTIVIDAD - DERECHA -->
+          <polygon points="234,120 120,234 120,120 120,6" fill="#FFCC00"/>
+          <!-- BLANCO - ESPECIFICO - ABAJO -->
+          <polygon points="120,120 234,120 120,234 6,120" fill="#f0f0f0"/>
+
+          <!-- Líneas divisorias internas -->
+          <line x1="120" y1="6" x2="120" y2="234" stroke="#111" stroke-width="2.5"/>
+          <line x1="6" y1="120" x2="234" y2="120" stroke="#111" stroke-width="2.5"/>
+
+          <!-- NÚMERO INFLAMABILIDAD (arriba - rojo) -->
+          <text id="svg-infla" x="120" y="75" text-anchor="middle" dominant-baseline="middle"
+            font-size="52" font-weight="900" font-family="Arial,sans-serif" fill="white">-</text>
+          <text x="120" y="108" text-anchor="middle" font-size="11" font-weight="bold"
+            font-family="Arial,sans-serif" fill="rgba(255,255,255,0.85)" letter-spacing="1">INFLAMAB.</text>
+
+          <!-- NÚMERO SALUD (izquierda - azul) -->
+          <text id="svg-salud" x="65" y="120" text-anchor="middle" dominant-baseline="middle"
+            font-size="52" font-weight="900" font-family="Arial,sans-serif" fill="white">-</text>
+          <text x="65" y="148" text-anchor="middle" font-size="10" font-weight="bold"
+            font-family="Arial,sans-serif" fill="rgba(255,255,255,0.85)" letter-spacing="0.5">SALUD</text>
+
+          <!-- NÚMERO REACTIVIDAD (derecha - amarillo) -->
+          <text id="svg-react" x="175" y="120" text-anchor="middle" dominant-baseline="middle"
+            font-size="52" font-weight="900" font-family="Arial,sans-serif" fill="#111">-</text>
+          <text x="175" y="148" text-anchor="middle" font-size="9.5" font-weight="bold"
+            font-family="Arial,sans-serif" fill="rgba(0,0,0,0.7)" letter-spacing="0.5">REACTIVID.</text>
+
+          <!-- TEXTO ESPECIFICO (abajo - blanco) -->
+          <text id="svg-espec" x="120" y="190" text-anchor="middle" dominant-baseline="middle"
+            font-size="20" font-weight="900" font-family="Arial,sans-serif" fill="#111">-</text>
+
+          <!-- Borde exterior del rombo -->
+          <polygon points="120,4 236,120 120,236 4,120" fill="none" stroke="#000" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <!-- LEYENDA con colores correctos -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:#001133;border-radius:10px;padding:11px;border-left:4px solid #0033CC">
+          <div style="font-size:9px;font-weight:bold;letter-spacing:1px;color:#4488ff;margin-bottom:4px">&#9632; NIVEL RIESGO (AZUL)</div>
+          <div style="font-size:22px;font-weight:900;color:#66aaff" id="rl-salud">-</div>
+          <div style="font-size:10px;color:#5577aa;margin-top:3px;line-height:1.4" id="rl-salud-desc">-</div>
+        </div>
+        <div style="background:#1a0000;border-radius:10px;padding:11px;border-left:4px solid #CC0000">
+          <div style="font-size:9px;font-weight:bold;letter-spacing:1px;color:#ff4444;margin-bottom:4px">&#9632; INFLAMABILIDAD (ROJO)</div>
+          <div style="font-size:22px;font-weight:900;color:#ff8888" id="rl-infla">-</div>
+          <div style="font-size:10px;color:#774444;margin-top:3px;line-height:1.4" id="rl-infla-desc">-</div>
+        </div>
+        <div style="background:#1a1400;border-radius:10px;padding:11px;border-left:4px solid #FFCC00">
+          <div style="font-size:9px;font-weight:bold;letter-spacing:1px;color:#ffcc00;margin-bottom:4px">&#9632; REACTIVIDAD (AMARILLO)</div>
+          <div style="font-size:22px;font-weight:900;color:#ffdd44" id="rl-react">-</div>
+          <div style="font-size:10px;color:#776600;margin-top:3px;line-height:1.4" id="rl-react-desc">-</div>
+        </div>
+        <div style="background:#0a1020;border-radius:10px;padding:11px;border-left:4px solid #aaaaaa">
+          <div style="font-size:9px;font-weight:bold;letter-spacing:1px;color:#cccccc;margin-bottom:4px">&#9632; RIESGO ESPECIFICO (BLANCO)</div>
+          <div style="font-size:16px;font-weight:900;color:#dddddd" id="rl-espec">-</div>
+          <div style="font-size:10px;color:#667799;margin-top:3px;line-height:1.4" id="rl-espec-desc">-</div>
+        </div>
+      </div>
+
+      <!-- ESCALA DE REFERENCIA -->
+      <div style="background:#050d1a;border:1px solid #ffffff10;border-radius:10px;padding:14px">
+        <div style="font-size:10px;color:#445577;letter-spacing:2px;margin-bottom:8px;font-weight:bold">ESCALA NCH 1411/4 (0 AL 4)</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;font-size:11px">
+          <span style="color:#ff4444;font-weight:bold;font-size:14px">4</span><span style="color:#aabbcc">MORTAL / Inflamacion bajo 25°C / Puede explotar subitamente</span>
+          <span style="color:#ff8800;font-weight:bold;font-size:14px">3</span><span style="color:#aabbcc">Muy peligroso / Inflamacion bajo 37°C / Puede explotar por choque</span>
+          <span style="color:#ffcc00;font-weight:bold;font-size:14px">2</span><span style="color:#aabbcc">Peligroso / Inflamacion bajo 93°C / Inestable cambio quimico</span>
+          <span style="color:#88cc00;font-weight:bold;font-size:14px">1</span><span style="color:#aabbcc">Poco peligroso / Inflamacion sobre 93°C / Inestable si se calienta</span>
+          <span style="color:#448844;font-weight:bold;font-size:14px">0</span><span style="color:#aabbcc">Sin riesgo / No se inflama / Estable</span>
+        </div>
+        <div style="margin-top:10px;padding-top:8px;border-top:1px solid #ffffff10;font-size:10px;color:#556677;line-height:1.6">
+          <strong style="color:#cccccc">RIESGO ESPECIFICO:</strong> OX=Oxidante · COR=Corrosivo · W=No usar agua · ☢=Radioactivo · BIO=Biologico
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-fuego">
+      <div class="sec-label">CLASIFICACIÓN NCH 934:2008 – CLASE DE FUEGO</div>
+      <div id="fuego-clases-container"></div>
+      <div class="sec-label" style="margin-top:4px">AGENTES EXTINTORES RECOMENDADOS</div>
+      <div id="fuego-extintores-container"></div>
+      <div class="sec-label" style="margin-top:4px">AGENTES EXTINTORES PROHIBIDOS</div>
+      <div id="fuego-prohibidos-container"></div>
+    </div>
+
+    <!-- TAB CONTROL -->
+    <div class="tab-panel" id="tab-control">
+      <div class="sec-label">MEDIDAS DE CONTROL</div>
+      <div id="control-container"></div>
+    </div>
+
+    <!-- TAB NORMAS -->
+    <div class="tab-panel" id="tab-normas">
+      <div id="normas-container"></div>
+    </div>
+  </div>
+</div>
+
+<!--  VISTA HISTORIAL  -->
+<div id="vista-historial" style="display:none">
+  <div class="sec-label" id="hist-label">BÚSQUEDAS RECIENTES (0)</div>
+  <div id="historial-container">
+    <div style="text-align:center;color:#334466;padding:40px;font-size:13px">Sin búsquedas aún</div>
+  </div>
+</div>
+
+<!--  VISTA CLASES  -->
+<div id="vista-clases" style="display:none">
+  <div class="sec-label">CLASIFICACIÓN NCH 2190 / NCH 382</div>
+  <div id="clases-container"></div>
+  <div style="background:var(--bg2);border:1px solid #FF440033;border-radius:12px;padding:16px;margin-top:10px">
+    <div style="font-size:11px;color:#FF6600;font-weight:bold;margin-bottom:10px;letter-spacing:1px">🦺 NIVELES DE EPP</div>
+    <div id="epp-niveles-lista"></div>
+  </div>
+  <div style="background:var(--bg2);border:1px solid #FF660033;border-radius:12px;padding:16px;margin-top:10px">
+    <div style="font-size:11px;color:#FF6600;font-weight:bold;margin-bottom:10px;letter-spacing:1px">🔥 CLASES DE FUEGO – NCH 934:2008</div>
+    <div id="clases-fuego-lista"></div>
+  </div>
+</div>
+```
+
+  </div><!-- /content -->
+
+  <!-- INSTALL BANNER iOS -->
+
+  <div id="install-banner" style="display:none">
+    <p>📲 <strong>Instalar en iPhone:</strong> Toca <strong>Compartir</strong> → <strong>"Agregar a pantalla de inicio"</strong></p>
+    <button class="btn-dismiss" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+
+// BASE DE DATOS GRE 2025
+
+const DB = {
+"1001":{nombre:"Acetileno disuelto",clase:"2.1",division:"Gas inflamable",descripcion:"Gas inflamable comprimido, inestable en estado puro",peligro:"EXTREMO",color:"#FF4444",nch2190:"Clase 2 – Gases",nch382:"División 2.1 Gas Inflamable",dot:"UN1001 – Flammable Gas",gre_guia:"116P",alerta:"⚠ ALERTA ROJA: Gas inflamable bajo presión. Riesgo de BLEVE. Evacuar 300 m.",acciones_emergencia:["Aislar inmediatamente 100 m en todas direcciones","NO extinguir si no es posible detener la fuga","Enfriar cilindros con agua desde posición protegida","Evacuar 300 m si hay tanques involucrados","Alertar a Bomberos y empresa de gases","Eliminar toda fuente de ignición en la zona"],epp:{nivel:"A",items:[{icono:"🥽",nombre:"Traje encapsulado Nivel A + SCBA",oblig:true},{icono:"🧤",nombre:"Guantes criogénicos resistentes a químicos",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true},{icono:"🎭",nombre:"SCBA (equipo respiratorio autónomo)",oblig:true}]},zona:{inicial:"100 m",incendio:"800 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Válvulas de cierre de emergencia automático y detectores de gas con alarma audible."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Permiso de trabajo en caliente. Procedimiento escrito de manipulación. Solo personal certificado."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Asegurar cilindros verticalmente. Tapas puestas cuando no está en uso. No rodar cilindros."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar en área ventilada lejos de fuentes de calor. Evitar acumulación en espacios confinados."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Plan de evacuación activo. Detectores de gas instalados. Extintores CO₂ en zona. Teléfono: 132 Bomberos."}]},
+"1005":{nombre:"Amoníaco anhidro",clase:"2.3",division:"Gas tóxico",descripcion:"Gas tóxico y corrosivo. Peligroso por inhalación.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 – Gases",nch382:"División 2.3 Gas Tóxico",dot:"UN1005 – Toxic Gas",gre_guia:"125",alerta:"⚠ ALERTA ROJA: Gas tóxico. Inhalación puede ser MORTAL. Evacuar zona.",acciones_emergencia:["Aislar 300 m en todas direcciones","Evacuar sotavento 1.000 m si hay derrame grande","NO entrar sin SCBA y traje protector","Detener fuga si es seguro","Contener derrames con diques de arena","Notificar autoridades ambientales"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes resistentes a químicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables resistentes a químicos",oblig:true}]},zona:{inicial:"300 m",incendio:"1000 m",viento:"Sotavento 1.000 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Detectores de NH₃ con alarma. Ventilación forzada. Sistema de ducha de emergencia lavaojos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Procedimiento de bloqueo/etiquetado (LOTO). Solo personal con certificación HAZMAT."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Inspeccionar válvulas y conexiones antes de uso. Nunca abrir rápidamente las válvulas."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar lejos de ácidos. Zona de contención secundaria. Evitar descarga a aguas residuales."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antídoto: oxígeno puro. Zona de descontaminación establecida. Teléfono: 132 / CITUC 800 200 201."}]},
+"1017":{nombre:"Cloro",clase:"2.3",division:"Gas tóxico",descripcion:"Gas tóxico, oxidante y corrosivo. Color amarillo-verdoso.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 – Gases",nch382:"División 2.3 Gas Tóxico",dot:"UN1017 – Toxic Gas",gre_guia:"124",alerta:"⚠ ALERTA ROJA: Gas TÓXICO mortal. Evacuar inmediatamente. NO inhalar.",acciones_emergencia:["Evacuar INMEDIATAMENTE 300–1.000 m sotavento","Llamar equipos HAZMAT especializados","NO entrar sin SCBA y protección total","Rociar agua sobre nube de gas (con cautela)","Aislar fuente de fuga si es seguro","Alertar a hospitales cercanos"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butílicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables resistentes a químicos",oblig:true}]},zona:{inicial:"300 m",incendio:"1000 m",viento:"Sotavento 1.000 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Detectores electroquímicos de Cl₂. Sistema scrubber de neutralización alcalina. Ventilación extractora."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Acceso restringido solo a personal HAZMAT certificado. Registro de concentraciones diarias."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Inspección de cilindros antes y después de uso. Nunca mezclar con amoníaco ni sustancias inflamables."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar en área techada ventilada. Contención ante derrames. Neutralizar con soda cáustica diluida."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Evacuar y llamar HAZMAT. Nebulizar agua para absorber gas. Teléfono: 132 Bomberos / CITUC 800 200 201."}]},
+"1049":{nombre:"Hidrógeno comprimido",clase:"2.1",division:"Gas inflamable",descripcion:"Gas extremadamente inflamable. Llama invisible.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 2 – Gases",nch382:"División 2.1 Gas Inflamable",dot:"UN1049 – Flammable Gas",gre_guia:"115",alerta:"⚠ ALERTA NARANJA: Llama INVISIBLE. Riesgo de explosión severo.",acciones_emergencia:["Eliminar toda fuente de ignición","Aislar área 100 m en todas las direcciones","No extinguir si no se puede detener la fuga","Enfriar cilindros con agua desde posición protegida","Detectar fugas con detector de hidrógeno"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador con filtro",oblig:true},{icono:"🥽",nombre:"Traje Nivel B antiestático",oblig:true},{icono:"🧤",nombre:"Guantes criogénicos",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true}]},zona:{inicial:"100 m",incendio:"800 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Detector de H₂ con alarma. Equipos antiexplosivos (ATEX). Ventilación natural o forzada en almacén."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Señalización de zona ATEX. No fumar. Prohibición de teléfonos no intrínsecamente seguros."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Purgar líneas antes de trabajar. Comprobar ausencia de fugas con agua jabonosa (no llama)."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar cilindros separados de oxidantes. Lejos de calor. Asegurar con cadena."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Llama invisible: usar detector térmico. No extinguir si hay fuga activa. Teléfono: 132 Bomberos."}]},
+"1072":{nombre:"Oxígeno comprimido",clase:"2.2",division:"Gas oxidante",descripcion:"Oxidante. Incrementa el riesgo de incendio.",peligro:"MEDIO",color:"#00AAFF",nch2190:"Clase 2 – Gases",nch382:"División 2.2 Gas No Inflamable Oxidante",dot:"UN1072 – Oxidizing Gas",gre_guia:"122",alerta:"⚠ ALERTA AMARILLA: Oxidante potente. Intensifica incendios existentes.",acciones_emergencia:["Alejar de materiales inflamables y calor","Aislar área de fuga 50 m","Detener fuga si es seguro","Enfriar cilindros con agua si hay incendio cercano"],epp:{nivel:"C",items:[{icono:"🎭",nombre:"Respirador de media cara con filtro",oblig:false},{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de cuero o protección mecánica",oblig:true},{icono:"🦺",nombre:"Ropa de algodón (no sintética)",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar separado de materiales combustibles. Reguladores y conexiones limpios de grasa."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Prohibición absoluta de uso de grasa o aceite en equipos. No usar ropa sintética."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Abrir válvulas lentamente. Verificar ausencia de contaminantes antes de conectar."},{tipo:"AMBIENTAL",icono:"🌿",texto:"No mezclar con gases inflamables. Almacenar en área seca y ventilada."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Si hay incendio, retirar cilindros o enfriar con agua a distancia. Teléfono: 132 Bomberos."}]},
+"1075":{nombre:"Gas licuado de petróleo (GLP)",clase:"2.1",division:"Gas inflamable",descripcion:"Propano/Butano licuado. Más pesado que el aire.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 2 – Gases",nch382:"División 2.1 Gas Inflamable",dot:"UN1075 – Flammable Gas",gre_guia:"115",alerta:"⚠ ALERTA NARANJA: Gas inflamable. Riesgo de BLEVE en tanques. Acumula en zonas bajas.",acciones_emergencia:["Aislar 100 m en todas direcciones","Eliminar fuentes de ignición","Enfriar tanques con agua nebulizada","Evacuar si hay riesgo de BLEVE","Notificar empresa distribuidora de gas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador gases orgánicos",oblig:true},{icono:"🥽",nombre:"Traje Nivel B",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo grueso",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true}]},zona:{inicial:"100 m",incendio:"800 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Detector de gas en zona baja. Válvulas de exceso de flujo. Ventilación baja en recintos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inspección periódica de instalaciones. Registro de revisiones técnicas."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No usar en espacios sin ventilación. Verificar conexiones con agua jabonosa."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Tanques a distancia de viviendas según NCH 2070. Protección contra rayos solares directos."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Si hay fuga: cerrar llave, ventilar, evacuar. NO encender interruptores. Teléfono: 132 / empresa gas."}]},
+"1090":{nombre:"Acetona",clase:"3",division:"Líquido inflamable",descripcion:"Líquido inflamable de rápida evaporación. Vapores más pesados que el aire.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 – Líquidos Inflamables",nch382:"Clase 3 Líquido Inflamable",dot:"UN1090 – Flammable Liquid",gre_guia:"127",alerta:"⚠ ALERTA NARANJA: Líquido inflamable volátil. Vapores explosivos. Eliminar ignición.",acciones_emergencia:["Eliminar fuentes de ignición","Contener derrame con arena o absorbente","Ventilar área cerrada","No permitir entrada a alcantarillas","Cubrir con espuma si hay incendio"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores orgánicos",oblig:true},{icono:"🥽",nombre:"Gafas herméticas",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo o neopreno",oblig:true},{icono:"🦺",nombre:"Ropa resistente a solventes",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenamiento en área ventilada con detector de vapores. Recipientes con conexión a tierra."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Etiquetado según GHS/SGA. Hoja de datos de seguridad (HDS) disponible. Prohibido fumar."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Manipular con recipientes cerrados. No transvasar con motor funcionando."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Impedir derrame en alcantarillas. Usar absorbentes específicos para solventes."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Usar espuma AFFF o CO₂. No usar agua en chorro. Teléfono: 132 Bomberos."}]},
+"1170":{nombre:"Etanol (Alcohol etílico)",clase:"3",division:"Líquido inflamable",descripcion:"Alcohol inflamable. Llama poco visible. Mezcla con agua.",peligro:"MEDIO",color:"#FFAA00",nch2190:"Clase 3 – Líquidos Inflamables",nch382:"Clase 3 Líquido Inflamable",dot:"UN1170 – Flammable Liquid",gre_guia:"127",alerta:"⚠ ALERTA AMARILLA: Inflamable. Llama poco visible. Eliminar fuentes de ignición.",acciones_emergencia:["Eliminar fuentes de ignición","Absorber con tierra o arena","Usar agua pulverizada para disipar vapores","Evitar entrada a alcantarillado"],epp:{nivel:"C",items:[{icono:"🎭",nombre:"Respirador filtro vapores orgánicos",oblig:false},{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo de algodón",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 50 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar en recipientes herméticos. Zona ventilada alejada de calor."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Etiquetado correcto. Prohibido fumar. HDS disponible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Evitar derrames. Usar antorcha de seguridad para detectar llama invisible."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Impedir entrada a alcantarillas o cuerpos de agua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Usar espuma resistente al alcohol (ATC). Teléfono: 132 Bomberos."}]},
+"1203":{nombre:"Gasolina / Nafta",clase:"3",division:"Líquido inflamable",descripcion:"Combustible inflamable volátil. Vapores en zonas bajas.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 – Líquidos Inflamables",nch382:"Clase 3 Líquido Inflamable",dot:"UN1203 – Flammable Liquid",gre_guia:"128",alerta:"⚠ ALERTA NARANJA: Inflamable. Vapores explosivos en zonas bajas. No fumar.",acciones_emergencia:["Detener derrame en el origen","Usar tierra o absorbente para contener","Prohibir fumar y llama abierta","Prevenir entrada al drenaje","Usar espuma AFFF en incendio"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores orgánicos",oblig:true},{icono:"🥽",nombre:"Gafas splash",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo doble capa",oblig:true},{icono:"🦺",nombre:"Overol resistente a hidrocarburos",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Tanques con conexión a tierra y bonding. Detectores de vapores. Válvulas de venteo controlado."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Señalética HAZMAT. Zona de no fumar delimitada. Procedimientos de carga/descarga aprobados."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No llenar recipientes en exceso. Verificar hermeticidad de tapas. Evitar derrames."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Trampa de aceite en sumideros. Contención secundaria en área de almacenamiento."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Espuma AFFF para sofocar. No usar agua en chorro. Teléfono: 132 Bomberos."}]},
+"1267":{nombre:"Petróleo crudo",clase:"3",division:"Líquido inflamable",descripcion:"Mezcla de hidrocarburos. Puede contener H₂S tóxico.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 – Líquidos Inflamables",nch382:"Clase 3 Líquido Inflamable",dot:"UN1267 – Flammable Liquid",gre_guia:"128",alerta:"⚠ ALERTA NARANJA: Inflamable. Posible H₂S tóxico. Doble riesgo: incendio y toxicidad.",acciones_emergencia:["Aislar área 50 m","Detectar H₂S (sulfuro de hidrógeno)","Contener derrame con bordillos de tierra","No permitir entrada a ríos o alcantarillas","Notificar autoridad ambiental"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador H₂S/vapores",oblig:true},{icono:"🥽",nombre:"Gafas herméticas",oblig:true},{icono:"🧤",nombre:"Guantes resistentes a hidrocarburos",oblig:true},{icono:"🦺",nombre:"Overol resistente a hidrocarburos",oblig:true},{icono:"👢",nombre:"Botas antiestáticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 200 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Monitor continuo de H₂S en zona. Sistema de contención secundaria en área de almacén."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Entrenamiento en riesgo H₂S. Doble guardia en operaciones de transferencia."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Uso de detector personal de H₂S en todo momento. No trabajar solo."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Plan de contingencia ambiental. Absorbentes de hidrocarburos disponibles."},{tipo:"EMERGENCIA",icono:"🚨",texto:"H₂S: evacuar sotavento. Espuma para incendio. Teléfono: 132 / autoridad ambiental."}]},
+"1381":{nombre:"Fósforo blanco húmedo",clase:"4.2",division:"Sustancia pirofórica",descripcion:"Se inflama espontáneamente al contacto con el aire.",peligro:"EXTREMO",color:"#FF2200",nch2190:"Clase 4 – Sólidos Inflamables",nch382:"División 4.2 Sustancia Pirofórica",dot:"UN1381 – Spontaneously Combustible",gre_guia:"136",alerta:"⚠ ALERTA ROJA MÁXIMA: Pirofórico. Se inflama SOLO al aire. Mantener húmedo siempre.",acciones_emergencia:["NO exponer al aire libre","Mantener cubierto con agua en todo momento","Usar solo agua para extinguir","Evacuación 100 m inmediata","Personal HAZMAT especializado únicamente","No recoger fragmentos sin protección total"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A ignífugo",oblig:true},{icono:"🧤",nombre:"Guantes ignífugos doble capa",oblig:true},{icono:"👢",nombre:"Botas ignífugas",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar siempre sumergido en agua en recipiente hermético. Nunca en áreas calurosas."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Solo personal HAZMAT certificado. Procedimiento de manipulación en atmósfera inerte o agua."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Comprobar que siempre está cubierto por agua. Inspección regular del recipiente."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar lejos de fuentes de calor y materiales combustibles."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Apagar con agua ÚNICAMENTE. No usar CO₂ ni polvo. Teléfono: 132 Bomberos HAZMAT."}]},
+"1428":{nombre:"Sodio metálico",clase:"4.3",division:"Peligroso con agua",descripcion:"Reacciona violentamente con el agua produciendo H₂ inflamable.",peligro:"EXTREMO",color:"#FF2200",nch2190:"Clase 4 – Sólidos Inflamables",nch382:"División 4.3 Peligroso al Agua",dot:"UN1428 – Dangerous When Wet",gre_guia:"138",alerta:"⚠ ALERTA ROJA: NUNCA usar agua. Reacciona explosivamente con humedad.",acciones_emergencia:["NUNCA usar agua","Usar arena seca, polvo de grafito o extintor clase D","Aislar 100 m en todas direcciones","Proteger de humedad y lluvia","Solo personal HAZMAT especializado"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo",oblig:true},{icono:"🥽",nombre:"Traje Nivel A completamente sellado",oblig:true},{icono:"🧤",nombre:"Guantes ignífugos herméticos",oblig:true},{icono:"👢",nombre:"Botas impermeables ignífugas",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar en aceite mineral o atmósfera de argón. Recipientes herméticos impermeables al agua."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Prohibición absoluta de uso de agua en la zona. Señalización prominente."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Manipular con herramientas secas. Trabajar en atmósfera seca. No exponer a humedad ambiental."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacén en área techada y seca. Techo resistente. Lejos de cañerías de agua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Extintor clase D obligatorio. NUNCA agua o espuma. Teléfono: 132 Bomberos HAZMAT."}]},
+"1547":{nombre:"Anilina",clase:"6.1",division:"Sustancia tóxica",descripcion:"Líquido tóxico. Absorbido por piel. Causa metahemoglobinemia.",peligro:"ALTO",color:"#884400",nch2190:"Clase 6 – Sustancias Tóxicas",nch382:"División 6.1 Sustancia Tóxica",dot:"UN1547 – Toxic Substance",gre_guia:"153",alerta:"⚠ ALERTA NARANJA: Tóxico absorbible por piel. Atención médica ante cualquier exposición.",acciones_emergencia:["Aislar 50 m en todas direcciones","Evitar contacto con piel y ojos","Contener derrame con tierra o vermiculita","No permitir entrada a alcantarillas","Lavar piel expuesta 15 min con agua abundante"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro orgánico/tóxico",oblig:true},{icono:"🥽",nombre:"Gafas herméticas splash",oblig:true},{icono:"🧤",nombre:"Guantes de neopreno o butílico",oblig:true},{icono:"🦺",nombre:"Traje protección química Nivel B",oblig:true},{icono:"👢",nombre:"Botas resistentes a químicos",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Campana extractora. Sistema de absorción de vapores. Ducha y lavaojos de emergencia."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Vigilancia biológica (metahemoglobina). Rotación de personal. HDS visible en todo momento."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar exposición dérmica. Cambiarse de ropa antes de salir del área."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contención secundaria. Tratamiento de aguas residuales antes de descarga."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antídoto: azul de metileno (médico). CITUC: 800 200 201. Teléfono: 132."}]},
+"1689":{nombre:"Cianuro de sodio sólido",clase:"6.1",division:"Sustancia tóxica",descripcion:"Sólido muy tóxico. Libera HCN gaseoso con ácidos o agua.",peligro:"EXTREMO",color:"#884400",nch2190:"Clase 6 – Sustancias Tóxicas",nch382:"División 6.1 Sustancia Tóxica",dot:"UN1689 – Toxic Substance",gre_guia:"157",alerta:"⚠ ALERTA ROJA MÁXIMA: Cianuro. Dosis mínima LETAL. Evacuar 300 m inmediatamente.",acciones_emergencia:["Evacuar INMEDIATAMENTE 300 m","NUNCA entrar sin SCBA y traje Nivel A","NO mezclar con ácidos","Contener derrames secos con absorbente seco","Alertar servicios médicos con antídoto de cianuro","Notificar autoridades ambientales"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo OBLIGATORIO",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butílicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables a químicos",oblig:true}]},zona:{inicial:"300 m",incendio:"1000 m",viento:"Sotavento 1.000 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Detectores de HCN con alarma. Almacén separado de ácidos. Cerradura de seguridad."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inventario controlado. Solo 2 personas autorizadas con acceso. Registro de uso."},{tipo:"OPERACIONAL",icono:"🔧",texto:"NUNCA mezclar con ácidos. Revisar pH del área. No mojar el material."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar en área seca y segura. Contención secundaria impermeable."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antídoto: hidroxocobalamina IV. CITUC: 800 200 201 (24h). Teléfono: 132 HAZMAT."}]},
+"1760":{nombre:"Líquido corrosivo N.E.P.",clase:"8",division:"Sustancia corrosiva",descripcion:"Líquido corrosivo no especificado. Quemaduras severas.",peligro:"ALTO",color:"#3333AA",nch2190:"Clase 8 – Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN1760 – Corrosive Substance",gre_guia:"154",alerta:"⚠ ALERTA NARANJA: Corrosivo. Destruye tejidos. Protección total requerida.",acciones_emergencia:["Aislar área 50 m","Absorber con tierra o material inerte","No neutralizar sin conocer el producto exacto","Lavar contacto con agua 20 min","Buscar atención médica inmediata"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro ácidos/álcalis",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o PVC grueso",oblig:true},{icono:"🦺",nombre:"Traje protección química Nivel B",oblig:true},{icono:"👢",nombre:"Botas impermeables resistentes",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Estación de lavado de emergencia. Contención secundaria. Ventilación en área de manipulación."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Identificar sustancia exacta antes de intervenir. HDS disponible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Manipular con precaución extrema. Evitar salpicaduras."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar antes de disposición. Evitar descarga directa."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Lavar inmediatamente. Teléfono: 132 / SAMU 131 / CITUC 800 200 201."}]},
+"1789":{nombre:"Ácido clorhídrico (solución)",clase:"8",division:"Sustancia corrosiva",descripcion:"Ácido fuerte. Vapores de HCl tóxicos.",peligro:"ALTO",color:"#3333AA",nch2190:"Clase 8 – Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN1789 – Corrosive Substance",gre_guia:"157",alerta:"⚠ ALERTA NARANJA: Ácido fuerte. Vapores tóxicos irritantes. Proteger vías respiratorias.",acciones_emergencia:["Aislar 60 m en todas direcciones","Evacuar sotavento si hay vapores","No mezclar con álcalis sin control","Contener derrame con materiales inertes","Lavar ojos expuestos 15 min con agua"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro ácidos inorgánicos",oblig:true},{icono:"🥽",nombre:"Careta facial o gafas herméticas",oblig:true},{icono:"🧤",nombre:"Guantes PVC o neopreno",oblig:true},{icono:"🦺",nombre:"Delantal o traje protección química",oblig:true},{icono:"👢",nombre:"Botas de caucho resistentes",oblig:true}]},zona:{inicial:"60 m",incendio:"300 m",viento:"Sotavento 200 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Campana extractora o ventilación local. Ducha lavaojos en zona. Sensor de HCl en ambiente."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inspección semanal de recipientes y mangueras. HDS en área visible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Nunca agregar agua al ácido concentrado. Agregar ácido al agua lentamente."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar con bicarbonato o cal antes de disposición. Medir pH efluente."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Neutralizar derrame con cal o bicarbonato. Teléfono: 132 / CITUC 800 200 201."}]},
+"1830":{nombre:"Ácido sulfúrico",clase:"8",division:"Sustancia corrosiva",descripcion:"Ácido fuerte altamente corrosivo. Reacciona con agua generando calor extremo.",peligro:"EXTREMO",color:"#3333AA",nch2190:"Clase 8 – Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN1830 – Corrosive Substance",gre_guia:"137",alerta:"⚠ ALERTA ROJA: Ácido fuerte. NUNCA agregar agua directamente. Quemaduras graves.",acciones_emergencia:["Aislar 100 m en todas direcciones","NUNCA agregar agua al ácido concentrado","Neutralizar con bicarbonato o cal lentamente","Absorber con tierra seca o vermiculita","Lavar piel contactada con agua abundante 20 min","No provocar vómito si hay ingestión"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA o respirador con filtro ácido",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes butílicos o neopreno grueso",oblig:true},{icono:"🦺",nombre:"Traje Nivel A/B resistente a ácidos",oblig:true},{icono:"👢",nombre:"Botas de caucho resistentes a ácidos",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Ducha lavaojos certificada a menos de 10 m. Contención secundaria igual a 110% del volumen. Ventilación."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Etiquetado GHS/SGA. Señal de corrosivo visible. Registro de ingreso al área."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Siempre agregar ácido al agua. Usar recipientes resistentes a ácidos. Verificar integridad."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar residuos (pH 6-9) antes de descarga. No desechar a alcantarilla sin tratar."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Neutralizar con cal. Lavar zona. Teléfono: 132 / SAMU 131 / CITUC 800 200 201."}]},
+"2015":{nombre:"Peróxido de hidrógeno estabilizado (>60%)",clase:"5.1",division:"Sustancia oxidante",descripcion:"Oxidante fuerte. Puede causar incendio con material orgánico.",peligro:"ALTO",color:"#EEAA00",nch2190:"Clase 5 – Sustancias Oxidantes",nch382:"División 5.1 Oxidante",dot:"UN2015 – Oxidizing Substance",gre_guia:"143",alerta:"⚠ ALERTA NARANJA: Oxidante fuerte. Incendio espontáneo con material orgánico.",acciones_emergencia:["Aislar 50 m en todas direcciones","No permitir contacto con material combustible","Diluir derrames con grandes cantidades de agua","No usar herramientas que produzcan chispas","Proteger piel: quemaduras por oxidación"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro oxidantes",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o PVC",oblig:true},{icono:"🦺",nombre:"Traje protección química Nivel B",oblig:true},{icono:"👢",nombre:"Botas resistentes a químicos",oblig:true}]},zona:{inicial:"50 m",incendio:"400 m",viento:"Sotavento 200 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar en recipientes de PEHD o acero inoxidable. Ventilación permanente para evitar acumulación de O₂."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Temperatura controlada (< 30°C). Inspección de recipientes periódica. Prohibido material orgánico en zona."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No contaminar el producto. Usar utensilios limpios sin grasa. No devolver sobrante al recipiente."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Diluir abundantemente antes de disponer. No contaminar aguas."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Diluir con agua abundante. No usar extintores secos. Teléfono: 132 Bomberos."}]},
+"2031":{nombre:"Ácido nítrico",clase:"8",division:"Sustancia corrosiva",descripcion:"Ácido oxidante y corrosivo. Vapores tóxicos de NO₂.",peligro:"EXTREMO",color:"#3333AA",nch2190:"Clase 8 – Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2031 – Corrosive Substance",gre_guia:"157",alerta:"⚠ ALERTA ROJA: Ácido oxidante. Vapores tóxicos amarillos/pardos. Doble peligro.",acciones_emergencia:["Evacuar 100 m en todas direcciones","Evitar inhalar vapores de color pardo","No mezclar con materiales orgánicos","Diluir con agua desde distancia segura","Neutralizar con bicarbonato lentamente","Ante exposición respiratoria: aire fresco y médico inmediato"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butílicos",oblig:true},{icono:"👢",nombre:"Botas resistentes a ácidos",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 400 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Almacenar en vidrio o PEHD. Ventilación forzada. Sensor de NO₂ en área."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Separar de metales y materiales orgánicos. Rotulación GHS clara."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No mezclar con ningún material sin protocolo aprobado. Usar en campana."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar residuos antes de disposición. Monitorear pH efluente."},{tipo:"EMERGENCIA",icono:"🚨",texto:"SCBA obligatorio. Neutralizar con cal. Teléfono: 132 / CITUC 800 200 201."}]},
+"2209":{nombre:"Formaldehído en solución (Formalina)",clase:"8",division:"Sustancia corrosiva",descripcion:"Tóxico, cancerígeno y corrosivo. Categoría 1 IARC.",peligro:"ALTO",color:"#3333AA",nch2190:"Clase 8 – Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2209 – Corrosive Substance",gre_guia:"132",alerta:"⚠ ALERTA NARANJA: CANCERÍGENO Categoría 1. Minimizar toda exposición.",acciones_emergencia:["Aislar 50 m en todas direcciones","Ventilación inmediata del área","Absorber derrame con tierra o vermiculita","Evitar toda exposición (cancerígeno)","Lavar ojos 15 min con agua"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro formaldehído",oblig:true},{icono:"🥽",nombre:"Gafas herméticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo doble capa",oblig:true},{icono:"🦺",nombre:"Traje desechable resistente a químicos",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Campana extractora certificada. Monitoreo ambiental de formaldehído (<0,3 ppm). Lavaojos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Vigilancia médica periódica. Tiempo de exposición limitado. Rotulación IARC Grupo 1."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Usar mínimas cantidades. Recipientes cerrados. No comer ni beber en zona de trabajo."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Tratar residuos con oxidación. No verter a alcantarilla."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Ventilar. Lavar. Teléfono: 132 / SAMU 131 / CITUC 800 200 201 (cancerígeno confirmado)."}]},
+"3077":{nombre:"Sustancia peligrosa para el medio ambiente, sólida N.E.P.",clase:"9",division:"Varias",descripcion:"Contaminante ambiental sólido. Daña ecosistemas acuáticos.",peligro:"BAJO",color:"#667700",nch2190:"Clase 9 – Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3077 – Miscellaneous",gre_guia:"171",alerta:"ℹ ALERTA VERDE: Riesgo ambiental. Prevenir contaminación de aguas y suelo.",acciones_emergencia:["Contener material para evitar dispersión","Evitar entrada a cursos de agua","Recoger con equipos adecuados","Notificar autoridad ambiental"],epp:{nivel:"D",items:[{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo o cuero",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo estándar",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"10 m",incendio:"100 m",viento:"Sotavento 30 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Contención secundaria. Barreras de retención en alcantarillas cercanas."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Plan de gestión ambiental. Registro de manipulación."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar dispersión. Recoger en recipientes etiquetados."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Notificar a SMA o SEREMI de Salud si hay derrame significativo."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Contener y reportar. Teléfono: autoridad ambiental regional."}]},
+"3082":{nombre:"Sustancia peligrosa para el medio ambiente, líquida N.E.P.",clase:"9",division:"Varias",descripcion:"Contaminante ambiental líquido. Alta toxicidad acuática.",peligro:"BAJO",color:"#667700",nch2190:"Clase 9 – Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3082 – Miscellaneous",gre_guia:"171",alerta:"ℹ ALERTA VERDE: Riesgo ambiental. Contener derrames inmediatamente.",acciones_emergencia:["Absorber derrame con tierra o arena","Impedir entrada a sistemas de drenaje","Disponer según normativa ambiental","Reportar a autoridad ambiental"],epp:{nivel:"D",items:[{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"10 m",incendio:"100 m",viento:"Sotavento 30 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Recipientes con tapa. Contenedor de derrames."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Registro de uso y disposición."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Recoger inmediatamente cualquier derrame."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Disposición como residuo peligroso según D.S. 148."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Contener y reportar. Teléfono: autoridad ambiental."}]},
+"3480":{nombre:"Baterías de iones de litio",clase:"9",division:"Varias",descripcion:"Riesgo de incendio difícil de extinguir. Pueden reencenderse.",peligro:"MEDIO",color:"#667700",nch2190:"Clase 9 – Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3480 – Miscellaneous",gre_guia:"147",alerta:"⚠ ALERTA AMARILLA: Incendio de litio difícil de extinguir. Riesgo de reencendido.",acciones_emergencia:["Enfriar con grandes cantidades de AGUA","No usar CO₂ ni polvo químico seco","Aislar en contenedor metálico con agua","Ventilar: gases de fluoruro de hidrógeno","No manipular baterías dañadas sin protección"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro ácido/gases",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes ignífugos de cuero",oblig:true},{icono:"🦺",nombre:"Ropa ignífuga o traje de bombero",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERÍA",icono:"⚙️",texto:"Contenedor ignífugo de almacenamiento. Detector de temperatura y humo. Ventilación."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inspección visual antes del transporte. No cargar baterías dañadas o hinchadas."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No perforar, doblar ni cortocircuitar. Temperatura de almacenamiento < 35°C."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Disponer en punto limpio o con empresa autorizada de reciclaje RAEE."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Agua en grandes cantidades. Vigilar reencendido 24h. Teléfono: 132 Bomberos."}]}
+,"1010":{nombre:"Butadieno estabilizado",clase:"2.1",division:"Gas inflamable",descripcion:"Gas inflamable. Puede polimerizar explosivamente.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 2 - Gases",nch382:"Division 2.1 Gas Inflamable",dot:"UN1010 - Flammable Gas",gre_guia:"116P",alerta:"⚠ ALERTA NARANJA: Gas inflamable y polimerizable. Riesgo de explosion.",acciones_emergencia:["Aislar 100 m en todas direcciones","Eliminar fuentes de ignicion","No extinguir si hay fuga activa","Enfriar cilindros con agua","Monitorear posible polimerizacion"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador con filtro",oblig:true},{icono:"🥽",nombre:"Traje Nivel B antiestatico",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de gas ATEX. Almacenar con inhibidor de polimerizacion."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Control de temperatura de almacenaje. Inspeccion periodica de inhibidores."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Nunca almacenar sin inhibidor. Revisar fecha de caducidad del inhibidor."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar lejos de calor. Area ventilada."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Teléfono: 132 Bomberos. No extinguir sin cerrar fuga."}]},
+"1016":{nombre:"Monoxido de carbono comprimido",clase:"2.3",division:"Gas toxico",descripcion:"Gas toxico e inflamable. Inodoro e incoloro. Muy peligroso.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 - Gases",nch382:"Division 2.3 Gas Toxico",dot:"UN1016 - Toxic Gas",gre_guia:"119",alerta:"⚠ ALERTA ROJA: Gas TOXICO MORTAL inodoro e incoloro. Evacuar INMEDIATAMENTE.",acciones_emergencia:["Evacuar inmediatamente 300 m","NO entrar sin SCBA","Ventilar el area afectada","Detectar CO con monitores electronicos","Alertar servicios medicos: tratamiento oxigeno 100%"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes resistentes quimicos",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"300 m",incendio:"800 m",viento:"Sotavento 1000 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de CO con alarma en toda el area. Umbral maximo: 25 ppm."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Procedimiento de rescate con SCBA. Nunca trabajar solo en area con CO."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Medir CO antes de entrar a cualquier espacio. Purgar lineas."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Ventilacion forzada continua en areas cerradas."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antidoto: oxigeno 100%. CITUC: 800 200 201. Teléfono: 132."}]},
+"1040":{nombre:"Oxido de etileno",clase:"2.3",division:"Gas toxico",descripcion:"Gas toxico, inflamable y carcinogeno. Extremadamente peligroso.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 - Gases",nch382:"Division 2.3 Gas Toxico",dot:"UN1040 - Toxic Gas",gre_guia:"119P",alerta:"⚠ ALERTA ROJA MAXIMA: Toxico, inflamable y cancerigeno. Triple riesgo.",acciones_emergencia:["Evacuar 500 m en todas direcciones","SCBA y traje Nivel A obligatorios","No extinguir sin cerrar fuga","Enfriar cilindros con agua","Alertar hospitales cercanos"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butilicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"500 m",incendio:"1000 m",viento:"Sotavento 1500 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Sistema de deteccion ATEX. Zona ATEX clasificada. Ventilacion continua."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Solo personal HAZMAT certificado. Vigilancia medica periodica por carcinogenicidad."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Control estricto de fugas. Purgar antes de mantenimiento."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Monitoreo ambiental continuo. Contener emisiones."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CITUC: 800 200 201. Teléfono: 132 Bomberos HAZMAT."}]},
+"1051":{nombre:"Acido cianhidrico (Cianuro de hidrogeno) estabilizado",clase:"6.1",division:"Sustancia toxica",descripcion:"Liquido extremadamente toxico. Gas con olor a almendras amargas.",peligro:"EXTREMO",color:"#884400",nch2190:"Clase 6 - Sustancias Toxicas",nch382:"Division 6.1 Sustancia Toxica",dot:"UN1051 - Toxic Substance",gre_guia:"117",alerta:"⚠ ALERTA ROJA MAXIMA: Cianuro de hidrogeno. Dosis LETAL minima. Evacuar 500 m.",acciones_emergencia:["Evacuar INMEDIATAMENTE 500 m","SCBA y traje Nivel A obligatorios","NO entrar sin proteccion total","Alertar servicios medicos con antidoto de cianuro","Notificar autoridades ambientales y policiales"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butilicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"500 m",incendio:"1000 m",viento:"Sotavento 2000 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de HCN con alarma. Almacen separado y seguro con cerradura."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Solo 2 personas autorizadas con acceso. Antidoto de cianuro disponible en zona."},{tipo:"OPERACIONAL",icono:"🔧",texto:"NUNCA mezclar con acidos. Mantener pH basico para estabilizar."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener cualquier fuga. Notificar inmediatamente a autoridad ambiental."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antidoto: hidroxocobalamina IV. CITUC: 800 200 201 (24h)."}]},
+"1053":{nombre:"Sulfuro de hidrogeno",clase:"2.3",division:"Gas toxico",descripcion:"Gas toxico inflamable. Olor a huevo podrido. Paraliza el olfato a altas concentraciones.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 - Gases",nch382:"Division 2.3 Gas Toxico",dot:"UN1053 - Toxic Gas",gre_guia:"117",alerta:"⚠ ALERTA ROJA: H2S. El olfato NO es confiable. Puede matar en segundos a alta concentracion.",acciones_emergencia:["Evacuar 300 m en todas direcciones","SCBA obligatorio: NO confiar en el olfato","Detectar con sensor H2S antes de entrar","Enfriar cilindros con agua","Alertar servicios medicos"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje Nivel A o B",oblig:true},{icono:"🧤",nombre:"Guantes resistentes quimicos",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"300 m",incendio:"800 m",viento:"Sotavento 1000 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Monitor personal de H2S obligatorio (alarma a 10 ppm, IDLH: 100 ppm)."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Sistema de guardia y control. Nunca trabajar solo en area con H2S."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Medir H2S antes de entrar a cualquier espacio. Equipo de rescate en standby."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Ventilar area continuamente. Scrubber de gases si hay emision continua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Mover a aire fresco. Respiracion artificial. CITUC: 800 200 201."}]},
+"1076":{nombre:"Fosgeno",clase:"2.3",division:"Gas toxico",descripcion:"Gas de guerra. Extremadamente toxico. Olor a heno. Latencia de sintomas 24h.",peligro:"EXTREMO",color:"#BB00BB",nch2190:"Clase 2 - Gases",nch382:"Division 2.3 Gas Toxico",dot:"UN1076 - Toxic Gas",gre_guia:"125",alerta:"⚠ ALERTA ROJA MAXIMA: Fosgeno. Agente quimico de guerra. LETAL. Evacuar 1 km.",acciones_emergencia:["Evacuar INMEDIATAMENTE 1 km en todas direcciones","SOLO equipos HAZMAT especializados","Notificar autoridades civiles y militares inmediatamente","NO exponer a agua (reacciona)","Tratamiento medico especializado urgente"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo obligatorio",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butilicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"1000 m",incendio:"2000 m",viento:"Sotavento 3000 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Manejo exclusivo en instalaciones quimicas especializadas con controles maximos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Notificacion a autoridades. Solo personal especializado certificado HAZMAT."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Procedimientos de maxima seguridad. Doble verificacion antes de cualquier operacion."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Control de emisiones. Monitoreo continuo de perimetro."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Llamar autoridades inmediatamente. CITUC: 800 200 201. Teléfono: 132."}]},
+"1086":{nombre:"Cloruro de vinilo estabilizado",clase:"2.1",division:"Gas inflamable",descripcion:"Gas inflamable y carcinogeno. Materia prima del PVC.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 2 - Gases",nch382:"Division 2.1 Gas Inflamable",dot:"UN1086 - Flammable Gas",gre_guia:"116P",alerta:"⚠ ALERTA NARANJA: Gas inflamable CANCERIGENO. Proteccion total requerida.",acciones_emergencia:["Aislar 100 m en todas direcciones","Eliminar fuentes de ignicion","No extinguir si hay fuga activa","Enfriar cilindros con agua"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador con filtro",oblig:true},{icono:"🥽",nombre:"Traje Nivel B",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores ATEX. Monitoreo ambiental por carcinogenicidad."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Vigilancia medica por exposicion a cancerigeno. Registro de exposiciones."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar exposicion. Rotacion de personal."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Control de emisiones. Inhibidor de polimerizacion."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Teléfono: 132 Bomberos."}]},
+"1130":{nombre:"Aceite de alcanfor",clase:"3",division:"Liquido inflamable",descripcion:"Liquido inflamable con vapores toxicos.",peligro:"MEDIO",color:"#FFAA00",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1130 - Flammable Liquid",gre_guia:"128",alerta:"⚠ ALERTA AMARILLA: Liquido inflamable. Vapores toxicos irritantes.",acciones_emergencia:["Eliminar fuentes de ignicion","Absorber derrame con tierra o arena","Ventilar area cerrada","Evitar entrada a alcantarillas"],epp:{nivel:"C",items:[{icono:"🎭",nombre:"Respirador filtro vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Almacenar en area ventilada. Recipientes hermeticos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"HDS disponible. Prohibido fumar."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Evitar derrames. Usar absorbentes."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Impedir entrada a alcantarillas."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CO2 o polvo ABC. Teléfono: 132."}]},
+"1145":{nombre:"Ciclohexano",clase:"3",division:"Liquido inflamable",descripcion:"Liquido muy inflamable. Disolvente industrial.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1145 - Flammable Liquid",gre_guia:"128",alerta:"⚠ ALERTA NARANJA: Liquido muy inflamable. Vapores explosivos.",acciones_emergencia:["Eliminar fuentes de ignicion","Contener derrame con arena","Ventilar area","No permitir entrada a drenajes","Usar espuma AFFF en incendio"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo",oblig:true},{icono:"🦺",nombre:"Overol resistente solventes",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de vapores. Conexion a tierra."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Etiquetado GHS. Prohibido fumar."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Manipular en area ventilada. Recipientes hermeticos."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener derrames. Impedir contaminacion de suelo."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Espuma AFFF. No usar agua. Teléfono: 132."}]},
+"1193":{nombre:"Metil etil cetona (MEK)",clase:"3",division:"Liquido inflamable",descripcion:"Disolvente inflamable muy usado en industria.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1193 - Flammable Liquid",gre_guia:"127",alerta:"⚠ ALERTA NARANJA: Liquido inflamable. Vapores mas pesados que el aire.",acciones_emergencia:["Eliminar fuentes de ignicion","Absorber derrame con arena","Ventilar area","Evitar entrada a alcantarillas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo",oblig:true},{icono:"🦺",nombre:"Ropa resistente solventes",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de vapores organicos. Conexion a tierra."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"HDS visible. Prohibido fumar."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Usar en area ventilada. Recipientes cerrados."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Impedir entrada a alcantarillas y aguas."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Espuma ATC o CO2. Teléfono: 132."}]},
+"1230":{nombre:"Metanol (Alcohol metilico)",clase:"3",division:"Liquido inflamable",descripcion:"Alcohol toxico e inflamable. Llama invisible. Causa ceguera y muerte.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1230 - Flammable Liquid",gre_guia:"131",alerta:"⚠ ALERTA NARANJA: TOXICO e inflamable. Llama INVISIBLE. Causa ceguera.",acciones_emergencia:["Eliminar fuentes de ignicion","Absorber con tierra o arena","Ante ingestion buscar medico inmediatamente","Usar antorcha para detectar llama invisible","Evitar entrada a alcantarillas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo doble capa",oblig:true},{icono:"🦺",nombre:"Ropa resistente solventes",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de vapores. Almacenar separado de alcohol etilico para evitar confusion."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Etiquetado prominente TOXICO. Prohibicion de ingestion. HDS visible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Nunca transvasar sin etiqueta. Verificar identidad del producto."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener derrames. Notificar si llega a aguas."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Antidoto: etanol IV (medico). CITUC: 800 200 201. Teléfono: 132."}]},
+"1294":{nombre:"Tolueno",clase:"3",division:"Liquido inflamable",descripcion:"Hidrocarburo aromatico inflamable. Disolvente industrial. Toxico por inhalacion cronica.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1294 - Flammable Liquid",gre_guia:"130",alerta:"⚠ ALERTA NARANJA: Liquido inflamable y toxico cronico. Proteger vias respiratorias.",acciones_emergencia:["Eliminar fuentes de ignicion","Contener derrame con arena o tierra","Ventilar area","No permitir entrada a drenajes","Usar espuma AFFF en incendio"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas splash",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo",oblig:true},{icono:"🦺",nombre:"Overol resistente hidrocarburo",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detectores de vapores. Ventilacion local. Conexion a tierra."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Vigilancia medica por exposicion cronica. Limite TLV-TWA: 20 ppm."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar exposicion. Rotar personal."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Trampa de hidrocarburo en sumideros."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Espuma AFFF. No agua en chorro. Teléfono: 132."}]},
+"1307":{nombre:"Xilenos",clase:"3",division:"Liquido inflamable",descripcion:"Mezcla de isomeros de xileno. Inflamable y toxico por inhalacion.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 3 - Liquidos Inflamables",nch382:"Clase 3 Liquido Inflamable",dot:"UN1307 - Flammable Liquid",gre_guia:"130",alerta:"⚠ ALERTA NARANJA: Liquido inflamable. Toxico por inhalacion prolongada.",acciones_emergencia:["Eliminar fuentes de ignicion","Absorber con tierra o arena","Ventilar area","No permitir entrada a alcantarillas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador vapores organicos",oblig:true},{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo",oblig:true},{icono:"🦺",nombre:"Overol resistente",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Ventilacion local. Detectores de vapores."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Control de exposicion (TLV: 100 ppm). HDS disponible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Recipientes hermeticos. Evitar respirar vapores."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Impedir contaminacion de suelo y agua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Espuma AFFF. Teléfono: 132."}]},
+"1593":{nombre:"Diclorometano (Cloruro de metileno)",clase:"6.1",division:"Sustancia toxica",descripcion:"Solvente clorado toxico. Poco inflamable pero libera HCl y fosgeno al arder.",peligro:"ALTO",color:"#884400",nch2190:"Clase 6 - Sustancias Toxicas",nch382:"Division 6.1 Sustancia Toxica",dot:"UN1593 - Toxic Substance",gre_guia:"160",alerta:"⚠ ALERTA NARANJA: Toxico. Al arder libera FOSGENO. Proteccion respiratoria.",acciones_emergencia:["Aislar 50 m","Ventilar area","Evitar inhalar vapores o humos","Absorber derrame con tierra","Ante incendio: usar CO2, no agua"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro vapores organicos/halogenos",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo doble capa",oblig:true},{icono:"🦺",nombre:"Traje proteccion quimica",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 200 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Campana extractora. Monitoreo ambiental. Nivel maximo 50 ppm."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Categorizado como posible cancerigeno (IARC Grupo 2A). Vigilancia medica."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar exposicion. Recipientes hermeticos."},{tipo:"AMBIENTAL",icono:"🌿",texto:"No descargar a alcantarillas. Tratamiento como residuo peligroso."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CO2 para sofocar. CITUC: 800 200 201. Teléfono: 132."}]},
+"1710":{nombre:"Tricloroetileno",clase:"6.1",division:"Sustancia toxica",descripcion:"Disolvente clorado toxico. Cancerigeno. Poco inflamable.",peligro:"ALTO",color:"#884400",nch2190:"Clase 6 - Sustancias Toxicas",nch382:"Division 6.1 Sustancia Toxica",dot:"UN1710 - Toxic Substance",gre_guia:"160",alerta:"⚠ ALERTA NARANJA: CANCERIGENO Categoria 1. Toxico. Minimizar toda exposicion.",acciones_emergencia:["Aislar 50 m","Ventilar area","Evitar contacto con piel","Absorber derrame","No permitir entrada a alcantarillas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro vapores halogenados",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo o neopreno",oblig:true},{icono:"🦺",nombre:"Traje desechable",oblig:true},{icono:"👢",nombre:"Botas resistentes quimicos",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Campana extractora certificada. Monitoreo ambiental permanente."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"IARC Grupo 1 - Cancerigeno confirmado. Vigilancia medica obligatoria."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Uso de EPP obligatorio siempre. Minimizar tiempo de exposicion."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Residuo peligroso. Tratamiento especial antes de disposicion."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CO2 o espuma. CITUC: 800 200 201. Teléfono: 132."}]},
+"1942":{nombre:"Nitrato de amonio",clase:"5.1",division:"Sustancia oxidante",descripcion:"Oxidante solido. Puede explotar bajo fuego intenso o confinamiento. Fertilizante.",peligro:"EXTREMO",color:"#EEAA00",nch2190:"Clase 5 - Sustancias Oxidantes",nch382:"Division 5.1 Oxidante",dot:"UN1942 - Oxidizing Substance",gre_guia:"140",alerta:"⚠ ALERTA ROJA: Oxidante con riesgo de EXPLOSION bajo fuego o contaminacion.",acciones_emergencia:["Evacuar 500 m si hay incendio","Usar solo AGUA para enfriar y sofocar","NO usar CO2 ni polvo","Impedir contaminacion con combustibles","Notificar a autoridades de emergencia"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador con filtro oxidantes y gases",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o nitrilo",oblig:true},{icono:"🦺",nombre:"Traje proteccion quimica",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"300 m",incendio:"1000 m",viento:"Sotavento 500 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Almacenar sin contaminantes. Separado de combustibles y acidos. Detector de temperatura."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Plan de emergencia especifico. Inventario controlado. Notificacion a autoridades."},{tipo:"OPERACIONAL",icono:"🔧",texto:"NUNCA mezclar con combustibles. Evitar contaminacion. Control de temperatura."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacenar en area impermeabilizada. Notificar derrame importante."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Solo AGUA. Evacuar 500 m. Teléfono: 132 Bomberos."}]},
+"1978":{nombre:"Propano",clase:"2.1",division:"Gas inflamable",descripcion:"Gas inflamable licuado. Mas pesado que el aire. Riesgo BLEVE.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 2 - Gases",nch382:"Division 2.1 Gas Inflamable",dot:"UN1978 - Flammable Gas",gre_guia:"115",alerta:"⚠ ALERTA NARANJA: Gas inflamable. Se acumula en zonas bajas. Riesgo de BLEVE.",acciones_emergencia:["Aislar 100 m en todas direcciones","Eliminar fuentes de ignicion","Enfriar tanques con agua","Evacuar si hay riesgo de BLEVE","No extinguir sin cerrar suministro"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"SCBA o respirador gases organicos",oblig:true},{icono:"🥽",nombre:"Traje Nivel B",oblig:true},{icono:"🧤",nombre:"Guantes nitrilo grueso",oblig:true},{icono:"👢",nombre:"Botas antiestaticas",oblig:true}]},zona:{inicial:"100 m",incendio:"800 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Detector de gas en zona baja. Valvulas de exceso de flujo. Ventilacion baja."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inspeccion periodica de instalaciones. Registro de revisiones."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No usar en espacios sin ventilacion. Verificar conexiones."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Tanques a distancia segun normativa. Proteccion solar."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Cerrar llave, ventilar, evacuar. Teléfono: 132 / empresa gas."}]},
+"2029":{nombre:"Hidrazina anhidra",clase:"8",division:"Sustancia corrosiva",descripcion:"Liquido toxico, corrosivo, inflamable y cancerigeno. Multiples peligros.",peligro:"EXTREMO",color:"#3333AA",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2029 - Corrosive Substance",gre_guia:"132",alerta:"⚠ ALERTA ROJA: Hidrazina. Toxico, corrosivo, inflamable y CANCERIGENO. Cuadruple riesgo.",acciones_emergencia:["Evacuar 100 m en todas direcciones","SCBA y traje Nivel A obligatorios","Contener derrame con tierra seca","No permitir contacto con agua en grandes cantidades","Alertar servicios medicos"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo",oblig:true},{icono:"🥽",nombre:"Traje encapsulado Nivel A",oblig:true},{icono:"🧤",nombre:"Guantes butilicos doble capa",oblig:true},{icono:"👢",nombre:"Botas impermeables",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 500 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Campana extractora. Detector de vapores. Lavaojos de emergencia."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"IARC Grupo 2A - cancerigeno probable. Vigilancia medica obligatoria."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar exposicion. Recipientes cerrados. Uso de EPP completo siempre."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener residuos. Tratamiento especial. No descargar a agua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CITUC: 800 200 201. Teléfono: 132 Bomberos HAZMAT."}]},
+"2257":{nombre:"Potasio",clase:"4.3",division:"Peligroso con agua",descripcion:"Metal alcalino. Reacciona explosivamente con agua y se inflama en el aire.",peligro:"EXTREMO",color:"#FF2200",nch2190:"Clase 4 - Solidos Inflamables",nch382:"Division 4.3 Peligroso al Agua",dot:"UN2257 - Dangerous When Wet",gre_guia:"138",alerta:"⚠ ALERTA ROJA: NUNCA usar agua. Reaccion explosiva con agua y humedad.",acciones_emergencia:["NUNCA usar agua","Usar arena seca o polvo clase D","Aislar 100 m","Proteger de humedad y lluvia","Solo personal HAZMAT especializado"],epp:{nivel:"A",items:[{icono:"🎭",nombre:"SCBA completo",oblig:true},{icono:"🥽",nombre:"Traje Nivel A sellado",oblig:true},{icono:"🧤",nombre:"Guantes ignifugos hermeticos",oblig:true},{icono:"👢",nombre:"Botas impermeables ignifugas",oblig:true}]},zona:{inicial:"100 m",incendio:"500 m",viento:"Sotavento 300 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Almacenar en aceite mineral o atmosfera de argon. Recipientes hermeticos."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Prohibicion de agua en area. Senaletizacion prominente."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Manipular con herramientas secas. Atmosfera seca."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Almacen techado y seco. Lejos de caninas de agua."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Extintor clase D obligatorio. NUNCA agua. Teléfono: 132."}]},
+"2312":{nombre:"Fenol fundido",clase:"6.1",division:"Sustancia toxica",descripcion:"Liquido toxico a temperatura elevada. Absorbido por piel rapidamente.",peligro:"ALTO",color:"#884400",nch2190:"Clase 6 - Sustancias Toxicas",nch382:"Division 6.1 Sustancia Toxica",dot:"UN2312 - Toxic Substance",gre_guia:"153",alerta:"⚠ ALERTA NARANJA: Toxico absorbible por piel. Quemaduras quimicas graves.",acciones_emergencia:["Aislar 50 m","Evitar todo contacto cutaneo","Absorber derrame con tierra","Ante contacto: lavar con agua 20 min y buscar medico","No permitir entrada a alcantarillas"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro organico-toxico",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o butilos",oblig:true},{icono:"🦺",nombre:"Traje proteccion quimica Nivel B",oblig:true},{icono:"👢",nombre:"Botas resistentes quimicos",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 200 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Ducha y lavaojos de emergencia. Detector de vapores. Ventilacion local."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"HDS visible. Vigilancia medica. Limite TLV: 5 ppm."},{tipo:"OPERACIONAL",icono:"🔧",texto:"EPP obligatorio siempre. Cambio de ropa antes de salir del area."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener derrames. Neutralizar antes de disposicion."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Lavar abundante agua. CITUC: 800 200 201. Teléfono: 132."}]},
+"2448":{nombre:"Azufre fundido",clase:"4.1",division:"Solido inflamable",descripcion:"Solido inflamable en estado fundido. Quemaduras graves por contacto.",peligro:"ALTO",color:"#FF8800",nch2190:"Clase 4 - Solidos Inflamables",nch382:"Division 4.1 Solido Inflamable",dot:"UN2448 - Flammable Solid",gre_guia:"133",alerta:"⚠ ALERTA NARANJA: Solido fundido inflamable. Quemaduras graves por contacto.",acciones_emergencia:["Aislar 50 m","Dejar solidificar antes de manipular","Usar agua nebulizada para enfriar","No ingresar a zona de derrames sin EPP","Ventilar vapores de SO2"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro acidos/gases",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes ignifugos",oblig:true},{icono:"🦺",nombre:"Ropa ignifuga",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Monitor de SO2 en area. Ventilacion local. Temperatura controlada."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Control de temperatura del proceso. Inspeccion de tuberias."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Dejar solidificar antes de manipular. Nunca agregar agua al azufre fundido."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Contener derrames. SO2 es contaminante atmosferico."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Agua nebulizada. Teléfono: 132 Bomberos."}]},
+"2491":{nombre:"Etanolamina",clase:"8",division:"Sustancia corrosiva",descripcion:"Liquido corrosivo y ligeramente inflamable. Irritante severo.",peligro:"MEDIO",color:"#3333AA",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2491 - Corrosive Substance",gre_guia:"153",alerta:"⚠ ALERTA AMARILLA: Corrosivo. Puede causar quemaduras en piel y ojos.",acciones_emergencia:["Aislar 25 m","Absorber derrame con tierra inerte","Ante contacto: lavar con agua 15 min","No permitir entrada a alcantarillas","Buscar atencion medica si hay exposicion"],epp:{nivel:"C",items:[{icono:"🎭",nombre:"Respirador filtro acidos-alcalis",oblig:false},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes de neopreno o PVC",oblig:true},{icono:"🦺",nombre:"Delantal o traje proteccion",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Lavaojos de emergencia. Ventilacion en area de manipulacion."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"HDS visible. Control de exposicion."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Evitar contacto. Usar EPP siempre."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar antes de disposicion. pH 6-9."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Lavar con agua. SAMU 131. Teléfono: 132."}]},
+"2672":{nombre:"Amoniaco en solucion acuosa",clase:"8",division:"Sustancia corrosiva",descripcion:"Solucion alcalina corrosiva. Vapores irritantes.",peligro:"MEDIO",color:"#3333AA",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2672 - Corrosive Substance",gre_guia:"154",alerta:"⚠ ALERTA AMARILLA: Corrosivo y vapores irritantes. Ventilar area.",acciones_emergencia:["Aislar 25 m","Ventilar area","Absorber con tierra o arena","Ante contacto ocular: lavar 15 min","No mezclar con acidos"],epp:{nivel:"C",items:[{icono:"🎭",nombre:"Respirador filtro amoniaco",oblig:true},{icono:"🥽",nombre:"Gafas hermeticas",oblig:true},{icono:"🧤",nombre:"Guantes PVC o neopreno",oblig:true},{icono:"🦺",nombre:"Delantal o traje",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Ventilacion local. Detector de NH3."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"HDS disponible. Separar de acidos."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Abrir recipientes con cuidado. No mezclar."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Diluir y neutralizar antes de disposicion."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Agua abundante. Teléfono: 132."}]},
+"2789":{nombre:"Acido acetico glacial",clase:"8",division:"Sustancia corrosiva",descripcion:"Acido organico concentrado. Corrosivo e inflamable. Vapores irritantes.",peligro:"ALTO",color:"#3333AA",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2789 - Corrosive Substance",gre_guia:"132",alerta:"⚠ ALERTA NARANJA: Acido corrosivo inflamable. Vapores irritantes.",acciones_emergencia:["Aislar 50 m","Eliminar fuentes de ignicion","Absorber con tierra inerte","Ante contacto: lavar con agua 15 min","No mezclar con bases o peroxidos"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro acido organico",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o PVC",oblig:true},{icono:"🦺",nombre:"Traje Nivel B resistente acidos",oblig:true},{icono:"👢",nombre:"Botas resistentes acidos",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Ventilacion local. Ducha y lavaojos. Sensor de vapores."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Separar de bases y oxidantes. HDS visible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Recipientes hermeticos. No aplicar calor excesivo."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar antes de disposicion. Medir pH efluente."},{tipo:"EMERGENCIA",icono:"🚨",texto:"CO2 o polvo ABC. Teléfono: 132."}]},
+"2809":{nombre:"Mercurio",clase:"8",division:"Sustancia corrosiva",descripcion:"Metal liquido altamente toxico. Bioacumulable. Vapores toxicos a temperatura ambiente.",peligro:"ALTO",color:"#884400",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN2809 - Corrosive Substance",gre_guia:"172",alerta:"⚠ ALERTA NARANJA: Mercurio. Toxico bioacumulable. NO aspirar ni barrer sin EPP.",acciones_emergencia:["Aislar area de derrame","NO usar aspiradora convencional","Recoger con gotero en recipiente hermetico","Cubrir gotitas con azufre en polvo","Ventilar area: vapores invisibles pero toxicos"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro mercurio",oblig:true},{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo doble capa",oblig:true},{icono:"🦺",nombre:"Bata o delantal",oblig:true},{icono:"👢",nombre:"Botas resistentes",oblig:true}]},zona:{inicial:"10 m",incendio:"200 m",viento:"Sotavento 50 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Pisos impermeables. Monitor de vapores de Hg (limite 0.025 mg/m3). Kit especial de limpieza."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Vigilancia medica (mercurio en orina). Registro de cantidades."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Recipientes hermeticos. Nunca usar calor. Inmediatamente contener derrames."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Residuo peligroso de alta prioridad. Disposicion por empresa autorizada."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Kit de derrame de mercurio. CITUC: 800 200 201. Teléfono: 132."}]},
+"3264":{nombre:"Liquido inorganico corrosivo acido",clase:"8",division:"Sustancia corrosiva",descripcion:"Solucion acida inorganica corrosiva no especificada.",peligro:"ALTO",color:"#3333AA",nch2190:"Clase 8 - Corrosivos",nch382:"Clase 8 Sustancia Corrosiva",dot:"UN3264 - Corrosive Substance",gre_guia:"154",alerta:"⚠ ALERTA NARANJA: Acido inorganico corrosivo. Identificar producto especifico.",acciones_emergencia:["Aislar 50 m","Identificar sustancia exacta antes de intervenir","Absorber con tierra inerte","Neutralizar con bicarbonato o cal","Lavar contactos con agua abundante"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro acidos inorganicos",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes neopreno o PVC",oblig:true},{icono:"🦺",nombre:"Traje proteccion quimica",oblig:true},{icono:"👢",nombre:"Botas resistentes acidos",oblig:true}]},zona:{inicial:"50 m",incendio:"300 m",viento:"Sotavento 150 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Ducha y lavaojos. Ventilacion. Contencion secundaria."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Identificar el acido especifico. HDS disponible."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Siempre agregar acido al agua. EPP completo."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Neutralizar efluentes. Medir pH antes de disposicion."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Neutralizar con bicarbonato. CITUC: 800 200 201. Teléfono: 132."}]},
+"3480":{nombre:"Baterias de iones de litio",clase:"9",division:"Varias",descripcion:"Riesgo de incendio dificil de extinguir. Pueden reencenderse 24h despues.",peligro:"MEDIO",color:"#667700",nch2190:"Clase 9 - Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3480 - Miscellaneous",gre_guia:"147",alerta:"⚠ ALERTA AMARILLA: Incendio de litio dificil de extinguir. Riesgo de reencendido.",acciones_emergencia:["Enfriar con grandes cantidades de AGUA","No usar CO2 ni polvo quimico seco","Aislar baterias en contenedor con agua","Ventilar: gases de fluoruro de hidrogeno","No manipular baterias danadas sin proteccion"],epp:{nivel:"B",items:[{icono:"🎭",nombre:"Respirador filtro acido/gases",oblig:true},{icono:"🥽",nombre:"Careta facial completa",oblig:true},{icono:"🧤",nombre:"Guantes ignifugos de cuero",oblig:true},{icono:"🦺",nombre:"Ropa ignifuga o traje bombero",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"25 m",incendio:"200 m",viento:"Sotavento 100 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Contenedor ignifugo de almacenamiento. Detector de temperatura y humo."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Inspeccion visual antes del transporte. No cargar baterias danadas."},{tipo:"OPERACIONAL",icono:"🔧",texto:"No perforar ni cortocircuitar. Temperatura de almacenamiento menor a 35C."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Disposicion en punto limpio o reciclaje RAEE autorizado."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Agua en grandes cantidades. Vigilar reencendido 24h. Teléfono: 132."}]},
+"3077":{nombre:"Sustancia peligrosa para el medio ambiente solida N.E.P.",clase:"9",division:"Varias",descripcion:"Contaminante ambiental solido. Alta toxicidad para organismos acuaticos.",peligro:"BAJO",color:"#667700",nch2190:"Clase 9 - Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3077 - Miscellaneous",gre_guia:"171",alerta:"ℹ ALERTA VERDE: Riesgo ambiental. Prevenir contaminacion de aguas y suelo.",acciones_emergencia:["Contener material para evitar dispersion","Evitar entrada a cursos de agua","Recoger en contenedores etiquetados","Notificar autoridad ambiental"],epp:{nivel:"D",items:[{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo o cuero",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo estandar",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"10 m",incendio:"100 m",viento:"Sotavento 30 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Contencion secundaria. Barreras en alcantarillas."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Plan de gestion ambiental. Registro de manipulacion."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Minimizar dispersion. Recoger en recipientes etiquetados."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Notificar a SMA o SEREMI si hay derrame significativo."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Contener y reportar. Autoridad ambiental regional."}]},
+"3082":{nombre:"Sustancia peligrosa para el medio ambiente liquida N.E.P.",clase:"9",division:"Varias",descripcion:"Contaminante ambiental liquido. Alta toxicidad acuatica.",peligro:"BAJO",color:"#667700",nch2190:"Clase 9 - Sustancias Varias",nch382:"Clase 9 Varias",dot:"UN3082 - Miscellaneous",gre_guia:"171",alerta:"ℹ ALERTA VERDE: Riesgo ambiental. Contener derrames inmediatamente.",acciones_emergencia:["Absorber derrame con tierra o arena","Impedir entrada a sistemas de drenaje","Disponer segun normativa ambiental","Reportar a autoridad ambiental"],epp:{nivel:"D",items:[{icono:"🥽",nombre:"Gafas de seguridad",oblig:true},{icono:"🧤",nombre:"Guantes de nitrilo",oblig:true},{icono:"🦺",nombre:"Ropa de trabajo",oblig:true},{icono:"👢",nombre:"Botas de seguridad",oblig:true}]},zona:{inicial:"10 m",incendio:"100 m",viento:"Sotavento 30 m"},medidas_control:[{tipo:"INGENIERIA",icono:"⚙️",texto:"Recipientes con tapa. Contenedor de derrames."},{tipo:"ADMINISTRATIVA",icono:"📋",texto:"Registro de uso y disposicion."},{tipo:"OPERACIONAL",icono:"🔧",texto:"Recoger inmediatamente cualquier derrame."},{tipo:"AMBIENTAL",icono:"🌿",texto:"Disposicion como residuo peligroso segun D.S. 148."},{tipo:"EMERGENCIA",icono:"🚨",texto:"Contener y reportar. Autoridad ambiental."}]},
+
+};
+
+const PELIGRO_CFG = {
+  EXTREMO:{bg:"#CC0000",glow:"#FF000055",label:"PELIGRO EXTREMO",pulse:true},
+  ALTO:   {bg:"#CC5500",glow:"#FF880055",label:"PELIGRO ALTO",   pulse:false},
+  MEDIO:  {bg:"#998800",glow:"#FFAA0055",label:"PELIGRO MEDIO",  pulse:false},
+  BAJO:   {bg:"#446600",glow:"#88BB0055",label:"PELIGRO BAJO",   pulse:false},
+};
+const NEPP = {
+  A:{label:"Nivel A – Máxima Protección",color:"#FF2200",desc:"Traje encapsulado + SCBA. Máximo riesgo cutáneo y respiratorio."},
+  B:{label:"Nivel B – Alta Protección",  color:"#FF8800",desc:"Traje no encapsulado + SCBA. Alto riesgo respiratorio."},
+  C:{label:"Nivel C – Protección Media", color:"#FFAA00",desc:"Ropa resistente + respirador purificador. Riesgo moderado."},
+  D:{label:"Nivel D – Protección Básica",color:"#88BB00",desc:"Ropa de trabajo estándar. Riesgo mínimo."},
+};
+const COLORES_CONTROL = {INGENIERÍA:"#00aaff",ADMINISTRATIVA:"#aa88ff",OPERACIONAL:"#00ddaa",AMBIENTAL:"#88cc00",EMERGENCIA:"#FF4400"};
+
+
+// NCH 934:2008 – CLASES DE FUEGO
+
+const CLASES_FUEGO = {
+  A:{letra:"A",nombre:"Fuego clase A",color:"#CC2200",bg:"#CC220022",desc:"Combustibles sólidos comunes: madera, papel, tela, plástico, goma.",simbolo:"🪵"},
+  B:{letra:"B",nombre:"Fuego clase B",color:"#CC6600",bg:"#CC660022",desc:"Líquidos y gases inflamables: gasolina, aceites, solventes, GLP.",simbolo:"🛢️"},
+  C:{letra:"C",nombre:"Fuego clase C",color:"#0044CC",bg:"#0044CC22",desc:"Equipos eléctricos energizados: tableros, motores, transformadores.",simbolo:"⚡"},
+  D:{letra:"D",nombre:"Fuego clase D",color:"#CCAA00",bg:"#CCAA0022",desc:"Metales combustibles: sodio, potasio, magnesio, titanio, litio.",simbolo:"🔩"},
+  K:{letra:"K",nombre:"Fuego clase K",color:"#AA6600",bg:"#AA660022",desc:"Aceites y grasas de cocina calientes. Cocinas industriales. Requiere agente especial de saponificacion.",simbolo:"&#127859;"},
+};
+
+const EXTINTORES_INFO = {
+  agua:       {icono:"💧",nombre:"Agua a presión",desc:"Eficaz en clase A. Enfría el combustible. NUNCA en eléctricos ni líquidos.",color:"#0066FF"},
+  co2:        {icono:"🫧",nombre:"Dióxido de carbono CO₂",desc:"Clase B y C. No deja residuo. Ideal en equipos eléctricos y laboratorios.",color:"#888888"},
+  polvo_abc:  {icono:"🧯",nombre:"Polvo químico seco ABC",desc:"Clases A, B y C. Uso general. Interrumpe la reacción en cadena.",color:"#FF8800"},
+  polvo_bc:   {icono:"🧯",nombre:"Polvo químico seco BC",desc:"Clases B y C solamente. Gases y líquidos inflamables.",color:"#FFAA00"},
+  polvo_d:    {icono:"🔵",nombre:"Polvo especial clase D",desc:"Exclusivo para metales combustibles. Sofoca y aisla el metal.",color:"#CCAA00"},
+  espuma:     {icono:"🫧",nombre:"Espuma AFFF",desc:"Clases A y B. Cubre superficie y aísla vapores. Ideal en hidrocarburos.",color:"#00AAFF"},
+  espuma_atc: {icono:"🫧",nombre:"Espuma ATC (resistente alcohol)",desc:"Clase B en líquidos polares (alcohol, acetona). Forma membrana estable.",color:"#00CCAA"},
+  agua_nebul: {icono:"🌫️",nombre:"Agua nebulizada",desc:"Clase A y C (equipos desmontados). Reduce temperatura sin conducir electricidad.",color:"#4499FF"},
+  halon:      {icono:"⚗️",nombre:"Agente limpio (HFC/Halon)",desc:"Clases B y C. Sin residuo. Uso en salas de datos y aviones.",color:"#AA88FF"},
+  arena:      {icono:"🏖️",nombre:"Arena seca",desc:"Clase D y fuegos químicos especiales. Sofoca y absorbe.",color:"#AA8800"},
+};
+
+const FUEGO_DB = {
+  "1001":{clases:["B","C"],extintores:["co2","polvo_bc","agua_nebul"],prohibidos:["agua","espuma"],nota:"Llama de acetileno muy caliente. No extinguir si no se puede cerrar válvula."},
+  "1005":{clases:["B","C"],extintores:["agua_nebul","co2"],prohibidos:["polvo_abc"],nota:"El NH₃ puede reencenderse. Prioridad: detener fuga antes de extinguir."},
+  "1017":{clases:["C"],extintores:["agua_nebul","co2"],prohibidos:["polvo_abc","espuma"],nota:"El cloro no arde normalmente. Agua nebulizada para contener vapores."},
+  "1049":{clases:["B","C"],extintores:["co2","polvo_bc","agua_nebul"],prohibidos:["agua","espuma"],nota:"Llama invisible. Usar detector térmico. No extinguir si hay fuga activa."},
+  "1072":{clases:["C"],extintores:["co2","agua_nebul"],prohibidos:[],nota:"No combustible, pero intensifica incendios. Enfriar contenedor con agua."},
+  "1075":{clases:["B","C"],extintores:["polvo_abc","co2","espuma"],prohibidos:["agua"],nota:"Riesgo BLEVE. Enfriar tanques con agua. No extinguir sin cerrar suministro."},
+  "1090":{clases:["B"],extintores:["espuma_atc","co2","polvo_abc"],prohibidos:["agua"],nota:"Vapor más pesado que el aire. Espuma ATC por ser solvente polar."},
+  "1170":{clases:["B"],extintores:["espuma_atc","co2","polvo_abc"],prohibidos:["agua"],nota:"Llama poco visible. Usar espuma resistente al alcohol (ATC)."},
+  "1203":{clases:["B"],extintores:["espuma","polvo_abc","co2"],prohibidos:["agua"],nota:"Usar espuma AFFF. No usar agua en chorro: dispersa el combustible."},
+  "1267":{clases:["B"],extintores:["espuma","polvo_abc","co2"],prohibidos:["agua"],nota:"Posible H₂S. Riesgo doble: incendio y toxicidad. Espuma AFFF."},
+  "1381":{clases:["B","D"],extintores:["agua"],prohibidos:["co2","polvo_abc","polvo_bc","espuma"],nota:"SOLO agua. Nunca CO₂ ni polvos. Mantener húmedo en todo momento."},
+  "1428":{clases:["D"],extintores:["polvo_d","arena"],prohibidos:["agua","co2","espuma","polvo_abc"],nota:"NUNCA usar agua. Reacción explosiva. Solo polvo clase D o arena seca."},
+  "1547":{clases:["B"],extintores:["espuma","co2","polvo_abc"],prohibidos:["agua"],nota:"Líquido tóxico inflamable. Evitar inhalar humos. Usar espuma o CO₂."},
+  "1689":{clases:["A","B"],extintores:["polvo_abc","co2","espuma"],prohibidos:[],nota:"El cianuro en combustión libera HCN. SCBA obligatorio. No inhalar humos."},
+  "1760":{clases:["B","C"],extintores:["co2","polvo_abc"],prohibidos:["agua","espuma"],nota:"Depende del producto específico. Verificar HDS. CO₂ es el más seguro."},
+  "1789":{clases:["B","C"],extintores:["co2","agua_nebul"],prohibidos:["agua","espuma"],nota:"No usar agua en chorro: salpicaduras ácidas. Agua nebulizada a distancia."},
+  "1830":{clases:["C"],extintores:["co2","arena"],prohibidos:["agua","espuma","polvo_abc"],nota:"NUNCA agua: reacción violenta exotérmica. CO₂ o arena para material circundante."},
+  "2015":{clases:["A","B","C"],extintores:["agua","co2","polvo_abc"],prohibidos:[],nota:"Oxidante: intensifica el fuego de otros materiales. Diluir con agua abundante."},
+  "2031":{clases:["C"],extintores:["co2","agua_nebul"],prohibidos:["agua","polvo_abc"],nota:"Ácido oxidante. No usar agua en chorro. Vapores de NO₂ tóxicos."},
+  "2209":{clases:["A","B"],extintores:["polvo_abc","co2","espuma"],prohibidos:[],nota:"Cancerígeno. SCBA obligatorio. Humos tóxicos de formaldehído."},
+  "3077":{clases:["A"],extintores:["agua","polvo_abc"],prohibidos:[],nota:"Contaminante ambiental. Evitar que el agua de extinción llegue a cursos hídricos."},
+  "3082":{clases:["B"],extintores:["espuma","polvo_abc","co2"],prohibidos:["agua"],nota:"Contaminante ambiental líquido. Contener agua de extinción."},
+  "3480":{clases:["B","D"],extintores:["agua"],prohibidos:["co2","polvo_abc","polvo_bc","espuma"],nota:"SOLO agua en grandes cantidades. Vigilar reencendido 24h. Gases de HF tóxicos."},
+};
+
+let vistaActual = "buscar";
+let tabActual = "alerta";
+let historial = [];
+let resultadoActual = null;
+let modoActual = "un"; // "un" o "nombre"
+let codigoSeleccionado = null; // código elegido desde autocomplete
+
+// ── MODO TOGGLE ──
+function setModo(modo) {
+  modoActual = modo;
+  document.getElementById("btn-modo-un").classList.toggle("active", modo==="un");
+  document.getElementById("btn-modo-nombre").classList.toggle("active", modo==="nombre");
+  document.getElementById("modo-un-wrap").style.display = modo==="un" ? "block" : "none";
+  document.getElementById("modo-nombre-wrap").style.display = modo==="nombre" ? "block" : "none";
+  document.getElementById("error-box").style.display = "none";
+  document.getElementById("resultado").style.display = "none";
+  document.getElementById("peligro-badge").style.display = "none";
+  document.getElementById("autocomplete").style.display = "none";
+  codigoSeleccionado = null;
+}
+
+// ── BÚSQUEDA POR NOMBRE (autocomplete) ──
+function onNombreInput(el) {
+  const q = el.value.trim().toLowerCase();
+  document.getElementById("btn-clear-nombre").style.display = el.value ? "block" : "none";
+  codigoSeleccionado = null;
+  if (q.length < 2) { document.getElementById("autocomplete").style.display = "none"; return; }
+
+  const matches = Object.entries(DB).filter(([cod, d]) =>
+    d.nombre.toLowerCase().includes(q) ||
+    d.descripcion.toLowerCase().includes(q) ||
+    d.division.toLowerCase().includes(q) ||
+    cod.includes(q)
+  ).slice(0, 8);
+
+  const ac = document.getElementById("autocomplete");
+  if (!matches.length) { ac.style.display = "none"; return; }
+  ac.innerHTML = matches.map(([cod, d]) => {
+    const pc = PELIGRO_CFG[d.peligro];
+    return `<div class="ac-item" onclick="seleccionarSustancia('${cod}')">
+      <div>
+        <div class="ac-nombre">${d.nombre}</div>
+        <div class="ac-sub">UN ${cod} · Clase ${d.clase} · ${d.division}</div>
+      </div>
+      <div class="ac-badge" style="color:${pc.bg};border-color:${pc.bg}44;background:${pc.bg}11">${d.peligro}</div>
+    </div>`;
+  }).join("");
+  ac.style.display = "block";
+}
+
+function seleccionarSustancia(cod) {
+  const d = DB[cod];
+  codigoSeleccionado = cod;
+  document.getElementById("nombre-input").value = d.nombre;
+  document.getElementById("btn-clear-nombre").style.display = "block";
+  document.getElementById("autocomplete").style.display = "none";
+  // Buscar directamente
+  resultadoActual = {codigo:cod,...d};
+  renderResultado(resultadoActual);
+  historial = [{codigo:cod,nombre:d.nombre,clase:d.clase,peligro:d.peligro},...historial.filter(h=>h.codigo!==cod)].slice(0,10);
+  document.getElementById("error-box").style.display = "none";
+  setTab("alerta");
+}
+
+function onNombreKey(e) {
+  if (e.key === "Enter") {
+    document.getElementById("autocomplete").style.display = "none";
+    if (codigoSeleccionado) return;
+    buscar();
+  }
+}
+
+function limpiarNombre() {
+  document.getElementById("nombre-input").value = "";
+  document.getElementById("btn-clear-nombre").style.display = "none";
+  document.getElementById("autocomplete").style.display = "none";
+  document.getElementById("resultado").style.display = "none";
+  document.getElementById("peligro-badge").style.display = "none";
+  document.getElementById("error-box").style.display = "none";
+  codigoSeleccionado = null;
+}
+
+function setVista(v) {
+  vistaActual = v;
+  ["buscar","historial","clases"].forEach(id => {
+    document.getElementById("vista-"+id).style.display = id===v?"block":"none";
+    document.querySelectorAll(".nav-btn")[["buscar","historial","clases"].indexOf(id)].classList.toggle("active", id===v);
+  });
+  if (v==="historial") renderHistorial();
+  if (v==="clases") renderClases();
+}
+
+function setTab(t) {
+  tabActual = t;
+  const tabs = ["alerta","acciones","epp","rombo","fuego","control","normas"];
+  document.querySelectorAll(".sub-btn").forEach((b,i) => {
+    b.classList.toggle("active", tabs[i]===t);
+  });
+  tabs.forEach(id => {
+    document.getElementById("tab-"+id).classList.toggle("active", id===t);
+  });
+}
+
+function onInput(el) {
+  el.value = el.value.replace(/\D/g,"").slice(0,4);
+  document.getElementById("btn-clear").style.display = el.value ? "block" : "none";
+}
+
+function onKey(e) { if(e.key==="Enter") buscar(); }
+
+function limpiar() {
+  document.getElementById("codigo-input").value = "";
+  document.getElementById("btn-clear").style.display = "none";
+  document.getElementById("error-box").style.display = "none";
+  document.getElementById("resultado").style.display = "none";
+  document.getElementById("peligro-badge").style.display = "none";
+  resultadoActual = null;
+}
+
+function buscar() {
+  if (modoActual === "nombre") {
+    // Si ya seleccionó del autocomplete, ya se procesó
+    if (codigoSeleccionado) return;
+    // Intento de búsqueda por texto libre
+    const q = document.getElementById("nombre-input").value.trim().toLowerCase();
+    if (!q) { showError("Escribe el nombre de una sustancia"); return; }
+    const match = Object.entries(DB).find(([cod,d]) =>
+      d.nombre.toLowerCase().includes(q) || cod.includes(q)
+    );
+    if (match) { seleccionarSustancia(match[0]); return; }
+    showError(`No se encontró "${q}". Intenta con otro nombre.`);
+    return;
+  }
+  // Modo UN
+  const raw = document.getElementById("codigo-input").value.trim().replace(/^UN/i,"");
+  if (!raw) { showError("Ingresa un código UN de 4 dígitos"); return; }
+  const dato = DB[raw];
+  if (!dato) { showError(`Código UN ${raw} no está en la base de datos GRE 2025`); document.getElementById("resultado").style.display="none"; return; }
+  document.getElementById("error-box").style.display = "none";
+  resultadoActual = {codigo:raw,...dato};
+  renderResultado(resultadoActual);
+  historial = [{codigo:raw,nombre:dato.nombre,clase:dato.clase,peligro:dato.peligro},...historial.filter(h=>h.codigo!==raw)].slice(0,10);
+  setTab("alerta");
+}
+
+function showError(msg) {
+  const b = document.getElementById("error-box");
+  b.textContent = "⚠ " + msg;
+  b.style.display = "block";
+}
+
+function renderResultado(d) {
+  const pc = PELIGRO_CFG[d.peligro];
+  // badge header
+  const badge = document.getElementById("peligro-badge");
+  badge.textContent = d.peligro;
+  badge.style.background = pc.bg;
+  badge.style.display = "block";
+  if (d.peligro==="EXTREMO") badge.className="anim-blink"; else badge.className="";
+  // banner
+  const banner = document.getElementById("alerta-banner");
+  banner.style.background = pc.bg;
+  banner.style.boxShadow = `0 0 30px ${pc.glow}`;
+  if (d.peligro==="EXTREMO") banner.className="alerta-banner anim-pulse"; else banner.className="alerta-banner";
+  document.getElementById("alerta-titulo").textContent = pc.label;
+  document.getElementById("alerta-guia").textContent = `Guía GRE 2025 Nº ${d.gre_guia}`;
+  // sustancia card
+  const sc = document.getElementById("sust-card");
+  sc.style.borderLeftColor = d.color;
+  sc.style.borderColor = d.color+"44";
+  document.getElementById("sust-un").textContent = `UN ${d.codigo}`;
+  document.getElementById("sust-nombre").textContent = d.nombre;
+  document.getElementById("sust-desc").textContent = d.descripcion;
+  const cb = document.getElementById("clase-badge");
+  cb.textContent = `Cl ${d.clase}`;
+  cb.style.background = d.color+"22";
+  cb.style.border = `1px solid ${d.color}`;
+  cb.style.color = d.color;
+  // alerta box
+  const ab = document.getElementById("alerta-box");
+  ab.style.borderColor = pc.bg;
+  ab.style.background = pc.bg+"22";
+  document.getElementById("alerta-box-txt").textContent = d.alerta;
+  // zonas
+  const zc = document.getElementById("zonas-container");
+  const zonaItems = [
+    {label:"Aislamiento inicial",val:d.zona.inicial,color:"#FF4400"},
+    {label:"Si hay incendio",val:d.zona.incendio,color:"#FF8800"},
+    {label:"Dirección del viento",val:d.zona.viento,color:"#FFAA00"},
+  ];
+  zc.innerHTML = zonaItems.map(z=>`
+    <div class="zona-card" style="border-left:3px solid ${z.color}">
+      <span class="zona-label">${z.label}</span>
+      <span class="zona-val" style="color:${z.color}">${z.val}</span>
+    </div>`).join("");
+  // acciones
+  document.getElementById("acciones-container").innerHTML = d.acciones_emergencia.map((a,i)=>`
+    <div class="accion-card">
+      <div class="accion-num">${i+1}</div>
+      <div class="accion-txt">${a}</div>
+    </div>`).join("");
+  // EPP
+  const ne = NEPP[d.epp.nivel];
+  const nc = document.getElementById("epp-nivel-card");
+  nc.style.borderColor = ne.color;
+  nc.style.background = ne.color+"22";
+  document.getElementById("epp-nivel-titulo").style.color = ne.color;
+  document.getElementById("epp-nivel-titulo").textContent = ne.label;
+  document.getElementById("epp-nivel-desc").textContent = ne.desc;
+  document.getElementById("epp-container").innerHTML = d.epp.items.map(item=>`
+    <div class="epp-item ${item.oblig?"oblig":""}">
+      <span class="epp-icono">${item.icono}</span>
+      <span class="epp-nombre">${item.nombre}</span>
+      <span class="epp-tag ${item.oblig?"":"opc"}">${item.oblig?"OBLIGATORIO":"OPCIONAL"}</span>
+    </div>`).join("");
+  // CONTROL
+  document.getElementById("control-container").innerHTML = d.medidas_control.map(m=>`
+    <div class="control-card" style="border-left-color:${COLORES_CONTROL[m.tipo]||'#00aaff'}">
+      <span class="control-icono">${m.icono}</span>
+      <div>
+        <div class="control-tipo" style="color:${COLORES_CONTROL[m.tipo]||'#00aaff'}">${m.tipo}</div>
+        <div class="control-texto">${m.texto}</div>
+      </div>
+    </div>`).join("");
+  // NORMAS
+  document.getElementById("normas-container").innerHTML = [
+    {titulo:"NCH 2190",valor:d.nch2190,icono:"📋",color:"#00aaff"},
+    {titulo:"NCH 382",valor:d.nch382,icono:"📌",color:"#00ccaa"},
+    {titulo:"NCH 934:2008",valor:`Clase de fuego: ${(FUEGO_DB[d.codigo]?.clases||["N/D"]).map(c=>CLASES_FUEGO[c]?.nombre||c).join(" / ")}`,icono:"🔥",color:"#FF6600"},
+    {titulo:"DOT 1411/4 (CAPA)",valor:d.dot,icono:"🏷️",color:"#aa88ff"},
+    {titulo:"Guía GRE 2025",valor:`Guía de respuesta de emergencia Nº ${d.gre_guia}`,icono:"🚒",color:"#FF4400"},
+  ].map(n=>`
+    <div class="norma-card" style="border-left-color:${n.color}">
+      <span class="norma-icono">${n.icono}</span>
+      <div>
+        <div class="norma-titulo" style="color:${n.color}">${n.titulo}</div>
+        <div class="norma-valor">${n.valor}</div>
+      </div>
+    </div>`).join("");
+
+  // FUEGO
+  renderFuego(d);
+
+  // ROMBO NCH 1411/4
+  renderRombo(d);
+
+  document.getElementById("resultado").style.display = "block";
+}
+
+// ──────────────────────────────────────────────
+// RENDER FUEGO
+// ──────────────────────────────────────────────
+function renderFuego(d) {
+  const f = FUEGO_DB[d.codigo];
+  if (!f) {
+    document.getElementById("fuego-clases-container").innerHTML = '<div style="color:#445577;font-size:13px;padding:10px">No hay datos de clasificación de fuego para esta sustancia.</div>';
+    document.getElementById("fuego-extintores-container").innerHTML = "";
+    document.getElementById("fuego-prohibidos-container").innerHTML = "";
+    return;
+  }
+
+  // Clases de fuego NCH 934
+  document.getElementById("fuego-clases-container").innerHTML = f.clases.map(cl => {
+    const info = CLASES_FUEGO[cl];
+    return `<div class="fuego-clase-card" style="border-color:${info.color}33;border-left:4px solid ${info.color}">
+      <div class="fuego-letra" style="background:${info.bg};color:${info.color};border:2px solid ${info.color}44">
+        ${info.letra}
+      </div>
+      <div class="fuego-info">
+        <div class="fuego-nombre">${info.simbolo} ${info.nombre}</div>
+        <div class="fuego-desc">${info.desc}</div>
+        <div class="fuego-aplica" style="color:${info.color}">▲ APLICA A ESTA SUSTANCIA</div>
+      </div>
+    </div>`;
+  }).join("") + (f.nota ? `<div style="background:#0a1a22;border:1px solid #00aaff22;border-radius:10px;padding:12px 14px;margin-top:4px;font-size:12px;color:#7799bb;line-height:1.5">
+    💡 <strong style="color:#00aaff">Nota táctica:</strong> ${f.nota}
+  </div>` : "");
+
+  // Extintores recomendados
+  document.getElementById("fuego-extintores-container").innerHTML = f.extintores.map(ex => {
+    const info = EXTINTORES_INFO[ex];
+    if (!info) return "";
+    return `<div class="extintor-card" style="border-left-color:${info.color}">
+      <span class="extintor-icono">${info.icono}</span>
+      <div>
+        <div class="extintor-tipo" style="color:${info.color}">✔ ${info.nombre}</div>
+        <div class="extintor-desc">${info.desc}</div>
+        <span class="extintor-eficacia" style="color:${info.color};background:${info.color}18;border:1px solid ${info.color}44">RECOMENDADO</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  // Extintores prohibidos
+  if (f.prohibidos.length) {
+    document.getElementById("fuego-prohibidos-container").innerHTML = f.prohibidos.map(ex => {
+      const info = EXTINTORES_INFO[ex];
+      if (!info) return "";
+      return `<div class="extintor-card prohibido">
+        <span class="extintor-icono">${info.icono}</span>
+        <div>
+          <div class="extintor-tipo" style="color:#FF4400">✖ ${info.nombre}</div>
+          <div class="extintor-desc">${info.desc}</div>
+          <span class="extintor-eficacia" style="color:#FF4400;background:#FF440018;border:1px solid #FF440044">PROHIBIDO</span>
+        </div>
+      </div>`;
+    }).join("");
+  } else {
+    document.getElementById("fuego-prohibidos-container").innerHTML = '<div style="color:#445577;font-size:12px;padding:4px 0 8px">No hay agentes prohibidos específicos para esta sustancia.</div>';
+  }
+}
+
+
+// ──────────────────────────────────────────────
+// RENDER HISTORIAL
+// ──────────────────────────────────────────────
+
+// ── ROMBO NCH 1411/4 ──
+// [salud, inflamabilidad, reactividad, especial]
+// Especial: W=No agua, OX=Oxidante, SA=Gas asfixiante, Li=Litio, ""=ninguno
+const ROMBO_DB = {
+"1001":[1,4,3,"SA"],"1005":[3,1,0,""],"1008":[3,0,2,"W"],"1010":[2,4,2,""],
+"1016":[3,4,0,""],"1017":[3,0,0,"OX"],"1040":[4,4,3,""],"1045":[4,0,4,"OX"],
+"1049":[0,4,0,"SA"],"1050":[3,0,2,"W"],"1051":[4,4,2,""],"1053":[4,4,0,""],
+"1062":[3,1,0,""],"1072":[0,0,0,"OX"],"1075":[1,4,0,""],"1076":[4,0,0,""],
+"1079":[3,0,0,""],"1086":[2,4,2,""],"1090":[1,3,0,""],"1093":[4,3,2,""],
+"1114":[2,3,0,""],"1131":[3,3,0,""],"1155":[1,4,1,""],"1160":[3,4,0,""],
+"1170":[0,3,0,""],"1173":[1,3,0,""],"1193":[1,3,0,""],"1198":[2,2,0,""],
+"1199":[3,2,0,""],"1203":[1,3,0,""],"1219":[1,3,0,""],"1223":[0,2,0,""],
+"1230":[1,3,0,""],"1247":[2,3,2,""],"1263":[1,3,0,""],"1267":[2,3,0,""],
+"1280":[3,4,2,""],"1294":[2,3,0,""],"1307":[2,3,0,""],"1381":[4,4,2,"W"],
+"1428":[3,0,3,"W"],"1547":[3,2,0,""],"1580":[4,1,0,""],"1593":[2,1,0,""],
+"1648":[3,3,0,""],"1689":[4,0,0,""],"1710":[2,1,0,""],"1714":[4,0,3,"W"],
+"1730":[3,0,2,"W"],"1744":[3,0,0,"OX"],"1760":[3,0,0,""],"1789":[3,0,1,""],
+"1791":[2,0,0,""],"1798":[3,0,2,"OX"],"1802":[3,0,3,"OX"],"1806":[3,0,2,"W"],
+"1809":[4,3,2,"W"],"1810":[4,0,2,"W"],"1823":[3,0,1,"W"],"1824":[3,0,1,""],
+"1828":[3,0,2,"W"],"1829":[3,0,2,"W"],"1830":[3,0,2,"W"],"1831":[4,0,3,"W"],
+"1836":[3,0,3,"W"],"1848":[2,3,0,""],"1863":[1,3,0,""],"1869":[0,1,1,"W"],
+"1942":[1,0,3,"OX"],"1950":[1,4,0,""],"1978":[1,4,0,""],"1993":[1,3,0,""],
+"2014":[2,0,1,"OX"],"2015":[3,0,2,"OX"],"2029":[4,3,3,""],"2031":[4,0,3,"OX"],
+"2032":[4,0,4,"OX"],"2055":[2,3,2,""],"2075":[3,2,0,""],"2078":[3,2,0,""],
+"2188":[4,4,2,""],"2199":[4,4,2,""],"2209":[3,2,0,""],"2257":[3,0,3,"W"],
+"2281":[3,1,0,""],"2312":[4,2,0,""],"2334":[4,3,0,""],"2382":[3,3,3,""],
+"2448":[0,1,0,""],"2477":[4,3,2,"W"],"2491":[2,2,0,""],"2672":[3,0,0,""],
+"2789":[2,3,0,""],"2794":[2,0,0,""],"2809":[3,0,0,""],"2924":[2,3,0,""],
+"3077":[1,0,0,""],"3082":[1,0,0,""],"3166":[1,1,0,""],"3264":[3,0,0,""],
+"3480":[1,1,1,"Li"]
+};
+
+const ROMBO_SALUD_DESC = {
+0:"0 - SIN RIESGO para la salud",
+1:"1 - POCO PELIGROSO. Irritacion leve. Dano minimo sin tratamiento",
+2:"2 - PELIGROSO. Exposicion intensa puede incapacitar temporalmente",
+3:"3 - MUY PELIGROSO. Exposicion corta puede causar dano grave",
+4:"4 - MORTAL. Puede causar muerte con minima exposicion"
+};
+const ROMBO_INFLA_DESC = {
+0:"0 - NO SE INFLAMA en condiciones normales",
+1:"1 - Debe precalentarse. Punto de inflamacion SOBRE 93 grados C",
+2:"2 - Inflamacion DEBAJO DE 93 grados C. Debe calentarse moderadamente",
+3:"3 - Inflamacion DEBAJO DE 37 grados C. Se inflama en condiciones normales",
+4:"4 - Inflamacion DEBAJO DE 25 grados C. Extremadamente inflamable"
+};
+const ROMBO_REACT_DESC = {
+0:"0 - ESTABLE. No reactivo con agua en ninguna condicion",
+1:"1 - INESTABLE EN CASO DE CALENTAMIENTO. Estable en condiciones normales",
+2:"2 - INESTABLE. Cambio quimico violento posible",
+3:"3 - PUEDE EXPLOTAR en caso de choque o calentamiento",
+4:"4 - PUEDE EXPLOTAR SUBITAMENTE a temperatura y presion normales"
+};
+const ROMBO_ESPEC_DESC = {
+"W":  "W - NO USAR AGUA. Reacciona peligrosamente generando calor o gases toxicos",
+"OX": "OX - OXIDANTE. Favorece y acelera la combustion de otros materiales",
+"COR":"COR - CORROSIVO. Destruye tejidos vivos y materiales",
+"SA": "GAS SIMPLE ASFIXIANTE. Puede desplazar el oxigeno en espacios cerrados",
+"Li": "BATERIA DE LITIO. Solo usar agua en grandes cantidades",
+"RAD":"RADIOACTIVO. Emite radiacion ionizante peligrosa",
+"BIO":"RIESGO BIOLOGICO. Contiene agentes patogenos",
+"":   "Sin indicacion especial"
+};
+
+function renderRombo(d) {
+  const r = ROMBO_DB[d.codigo];
+  const noData = !r;
+  const sal = noData ? "?" : r[0];
+  const inf = noData ? "?" : r[1];
+  const rea = noData ? "?" : r[2];
+  const esp = noData ? "" : r[3];
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  // Actualizar SVG del rombo con los valores reales
+  set("svg-salud", noData ? "?" : sal);
+  set("svg-infla",  noData ? "?" : inf);
+  set("svg-react",  noData ? "?" : rea);
+  set("svg-espec",  noData ? "?" : (esp||"-"));
+  // Actualizar leyenda inferior
+  set("rl-salud", noData ? "N/D" : sal+"/4");
+  set("rl-infla",  noData ? "N/D" : inf+"/4");
+  set("rl-react",  noData ? "N/D" : rea+"/4");
+  set("rl-espec",  noData ? "N/D" : (esp||"Ninguna"));
+  set("rl-salud-desc", noData ? "Datos no disponibles para esta sustancia" : (ROMBO_SALUD_DESC[sal]||"-"));
+  set("rl-infla-desc",  noData ? "Datos no disponibles para esta sustancia" : (ROMBO_INFLA_DESC[inf]||"-"));
+  set("rl-react-desc",  noData ? "Datos no disponibles para esta sustancia" : (ROMBO_REACT_DESC[rea]||"-"));
+  set("rl-espec-desc",  noData ? "Datos no disponibles para esta sustancia" : (ROMBO_ESPEC_DESC[esp]||ROMBO_ESPEC_DESC[""]));
+}
+
+
+function renderHistorial() {
+  document.getElementById("hist-label").textContent = `BÚSQUEDAS RECIENTES (${historial.length})`;
+  if (!historial.length) {
+    document.getElementById("historial-container").innerHTML = '<div style="text-align:center;color:#334466;padding:40px;font-size:13px">Sin búsquedas aún</div>';
+    return;
+  }
+  document.getElementById("historial-container").innerHTML = historial.map(h=>{
+    const pc = PELIGRO_CFG[h.peligro];
+    return `<button class="hist-item" onclick="cargarHistorial('${h.codigo}')">
+      <div>
+        <div class="hist-un">UN ${h.codigo}</div>
+        <div class="hist-nombre">${h.nombre}</div>
+        <div class="hist-clase">Clase ${h.clase}</div>
+      </div>
+      <div class="hist-badge" style="background:${pc.bg}">${h.peligro}</div>
+    </button>`;
+  }).join("");
+}
+
+function cargarHistorial(cod) {
+  setModo("un");
+  document.getElementById("codigo-input").value = cod;
+  document.getElementById("btn-clear").style.display = "block";
+  setVista("buscar");
+  setTimeout(buscar, 80);
+}
+
+function renderClases() {
+  const clases = [
+    {cl:"1",icono:"💥",nombre:"Explosivos",desc:"Materias y objetos que pueden explotar.",color:"#FF2200"},
+    {cl:"2.1",icono:"🔥",nombre:"Gases Inflamables",desc:"Gases que arden en contacto con el aire.",color:"#FF6600"},
+    {cl:"2.2",icono:"🫧",nombre:"Gases No Inflamables",desc:"Gases inertes o asfixiantes.",color:"#00AAFF"},
+    {cl:"2.3",icono:"☠️",nombre:"Gases Tóxicos",desc:"Riesgo de inhalación mortal.",color:"#BB00BB"},
+    {cl:"3",icono:"🛢️",nombre:"Líquidos Inflamables",desc:"Punto de inflamación bajo.",color:"#FF8800"},
+    {cl:"4.1",icono:"⚡",nombre:"Sólidos Inflamables",desc:"Arden fácilmente o por fricción.",color:"#FFBB00"},
+    {cl:"4.2",icono:"🌡️",nombre:"Sustancias Pirofóricas",desc:"Se inflaman solos al contacto con el aire.",color:"#FF5500"},
+    {cl:"4.3",icono:"💧",nombre:"Peligrosos al Agua",desc:"Reaccionan peligrosamente con agua.",color:"#0066FF"},
+    {cl:"5.1",icono:"⚗️",nombre:"Oxidantes",desc:"Intensifican la combustión.",color:"#FFCC00"},
+    {cl:"5.2",icono:"🧪",nombre:"Peróxidos Orgánicos",desc:"Alta reactividad con estructura peróxido.",color:"#FF4488"},
+    {cl:"6.1",icono:"☠️",nombre:"Sustancias Tóxicas",desc:"Peligro por ingestión, inhalación o contacto.",color:"#884400"},
+    {cl:"6.2",icono:"🦠",nombre:"Sustancias Infecciosas",desc:"Contienen agentes patógenos.",color:"#880000"},
+    {cl:"7",icono:"☢️",nombre:"Materiales Radiactivos",desc:"Emiten radiación ionizante.",color:"#CCCC00"},
+    {cl:"8",icono:"⚗️",nombre:"Corrosivos",desc:"Destruyen tejidos vivos y materiales.",color:"#3333AA"},
+    {cl:"9",icono:"📦",nombre:"Sustancias Varias",desc:"Peligros no incluidos en otras clases.",color:"#667799"},
+  ];
+  document.getElementById("clases-container").innerHTML = clases.map(c=>`
+    <div class="clase-row" style="border-left-color:${c.color}">
+      <span style="font-size:22px;flex-shrink:0">${c.icono}</span>
+      <div>
+        <div class="clase-cl" style="color:${c.color}">CLASE ${c.cl}</div>
+        <div class="clase-nombre">${c.nombre}</div>
+        <div class="clase-desc">${c.desc}</div>
+      </div>
+    </div>`).join("");
+  document.getElementById("epp-niveles-lista").innerHTML = Object.entries(NEPP).map(([k,v])=>`
+    <div style="display:flex;gap:10px;margin-bottom:10px;padding:10px 12px;background:#060f1e;border-radius:8px;border-left:3px solid ${v.color}">
+      <div style="width:28px;height:28px;border-radius:50%;background:${v.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:white;flex-shrink:0">${k}</div>
+      <div>
+        <div style="font-size:12px;font-weight:bold;color:${v.color}">${v.label}</div>
+        <div style="font-size:11px;color:#778899;margin-top:2px">${v.desc}</div>
+      </div>
+    </div>`).join("");
+
+  // NCH 934:2008 clases de fuego
+  const fuegoCont = document.getElementById("clases-fuego-lista");
+  if (fuegoCont) {
+    fuegoCont.innerHTML = Object.entries(CLASES_FUEGO).map(([k,v])=>`
+      <div style="display:flex;gap:12px;margin-bottom:10px;padding:12px 14px;background:#060f1e;border-radius:10px;border-left:3px solid ${v.color};align-items:center">
+        <div style="width:44px;height:44px;border-radius:8px;background:${v.bg};border:2px solid ${v.color}44;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:${v.color};flex-shrink:0">${v.letra}</div>
+        <div>
+          <div style="font-size:13px;font-weight:bold;color:${v.color};margin-bottom:2px">${v.simbolo} ${v.nombre}</div>
+          <div style="font-size:11px;color:#778899;line-height:1.4">${v.desc}</div>
+        </div>
+      </div>`).join("");
+  }
+}
+
+// Mostrar banner solo si NO está instalada como app
+if (!window.navigator.standalone) {
+  document.getElementById("install-banner").style.display = "flex";
+}
+</script>
+
+</body>
+</html>
